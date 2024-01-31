@@ -8,6 +8,7 @@ class RoutesName {
   static const String OtpVarification = 'OtpVarification_screen';
   static const String ForgotPassword = 'ForgotPassword_screen';
   static const String Welcome = 'Welcome_screen';
+  static const String LoginWithPhoneNumber = 'LoginWithPhoneNumber_screen';
 
   
 }

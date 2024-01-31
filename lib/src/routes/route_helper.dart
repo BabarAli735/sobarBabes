@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'package:sobarbabe/src/screens/auth/login.dart';
+import 'package:sobarbabe/src/screens/auth/login_phone_number.dart';
 import 'package:sobarbabe/src/screens/auth/splash_screen.dart';
 import 'package:sobarbabe/src/screens/auth/welcome.dart';
 
@@ -19,6 +20,10 @@ class Routes {
       case RoutesName.Welcome:
         return MaterialPageRoute(
             builder: (BuildContext context) =>  const Welcome (),
+            settings: settings);
+      case RoutesName.LoginWithPhoneNumber:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  const LoginWithPhoneNumber(),
             settings: settings);
   
       default:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
+import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'package:sobarbabe/src/widgets/index.dart';
 
 class Welcome extends StatefulWidget {
@@ -60,7 +61,11 @@ class _WelcomeState extends State<Welcome> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: CustomElevatedButton(
-                      text: 'Login with phone number', onPressed: () {}),
+                      text: 'Login with phone number',
+                      onPressed: () {
+                         Navigator.pushNamed(
+                            context, RoutesName.LoginWithPhoneNumber);
+                      }),
                 ),
               ),
               const SizedBox(height: 20),
@@ -70,22 +75,21 @@ class _WelcomeState extends State<Welcome> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: CustomElevatedButton(
-                      text: 'Login with email', onPressed: () {}),
+                      text: 'Login with email',
+                      onPressed: () {
+                      
+                      }),
                 ),
               ),
               const SizedBox(height: 15),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
                   'Already have account',
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-               
               ]),
 
               const SizedBox(
