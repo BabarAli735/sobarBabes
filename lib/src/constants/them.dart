@@ -37,6 +37,7 @@ class AppImages {
   static const String purplebackgroundlites = 'assets/images/purplebackgroundlites.png';
   static const String backgroundlites = 'assets/images/backgroundlites.png';
   static const String background_image = 'assets/images/background_image.jpg';
+  static const String call_icon = 'assets/icons/call_icon.svg';
 
 }
 

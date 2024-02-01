@@ -1,4 +1,5 @@
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sobarbabe/src/constants/them.dart';
@@ -6,7 +7,8 @@ import 'package:sobarbabe/src/routes/route_helper.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'dart:io' show Platform;
 main() async {
-  
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

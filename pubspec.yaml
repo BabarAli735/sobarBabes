@@ -41,6 +41,8 @@ dependencies:
   firebase_storage: ^11.6.1
   country_code_picker: ^3.0.0
   flutter_svg: ^2.0.9
+  firebase_auth: ^4.17.0
+  flutter_otp_text_field: ^1.1.1
 
 dev_dependencies:
   flutter_test:
