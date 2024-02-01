@@ -43,6 +43,9 @@ dependencies:
   flutter_svg: ^2.0.9
   firebase_auth: ^4.17.0
   flutter_otp_text_field: ^1.1.1
+  fluttertoast: ^8.2.4
+  another_flushbar: ^1.12.30
+  cloud_firestore: ^4.15.1
 
 dev_dependencies:
   flutter_test:

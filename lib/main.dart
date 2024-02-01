@@ -2,7 +2,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sobarbabe/src/constants/them.dart';
+import 'package:sobarbabe/src/provider/auth_provider.dart';
 import 'package:sobarbabe/src/routes/route_helper.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'dart:io' show Platform;
@@ -19,13 +21,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-      SafeArea(
-
-        child: MaterialApp(
-          title: 'Sobar Babes',
-          theme: _appTheme(),
-          initialRoute: RoutesName.TokenValidationScreen,
-          onGenerateRoute: Routes.generateRoute,
+      MultiProvider(
+         providers: [
+        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+       
+      ],
+        child: SafeArea(
+        
+          child: MaterialApp(
+            title: 'Sobar Babes',
+            theme: _appTheme(),
+            initialRoute: RoutesName.TokenValidationScreen,
+            onGenerateRoute: Routes.generateRoute,
+          ),
         ),
       );
    
