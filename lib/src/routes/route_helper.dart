@@ -6,6 +6,8 @@ import 'package:sobarbabe/src/screens/auth/login_phone_number.dart';
 import 'package:sobarbabe/src/screens/auth/otp_verification.dart';
 import 'package:sobarbabe/src/screens/auth/splash_screen.dart';
 import 'package:sobarbabe/src/screens/auth/welcome.dart';
+import 'package:sobarbabe/src/screens/home/home.dart';
+import 'package:sobarbabe/src/screens/profile/edit_profile.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -29,6 +31,15 @@ class Routes {
       case RoutesName.OtpVerification:
         return MaterialPageRoute(
             builder: (BuildContext context) =>  const OtpVerification(),
+            settings: settings);
+ 
+      case RoutesName.EditProfileScreen:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  const EditProfileScreen(),
+            settings: settings);
+      case RoutesName.Home:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  Home(),
             settings: settings);
   
       default:

@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sobarbabe/src/constants/them.dart';
+import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'package:sobarbabe/src/widgets/SvgIcon.dart';
 import 'package:sobarbabe/src/widgets/custom_outlined_button.dart';
 import 'package:sobarbabe/src/widgets/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../provider/auth_provider.dart';
 
 class LoginWithPhoneNumber extends StatefulWidget {
   const LoginWithPhoneNumber({super.key});
@@ -17,52 +23,52 @@ class LoginWithPhoneNumber extends StatefulWidget {
 class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
   final _numberController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // late final AuthenticationProvider _authenticationProvider;
 
   final String _initialSelection = 'US';
+  String _phoneNumber = '';
   String? _phoneCode = '+1';
-String _verificationId = '';
+  String _verificationId = '';
 
-  Future<void> _verifyPhoneNumber() async {
-    try {
-      await _auth.verifyPhoneNumber(
-        phoneNumber: '+923113516459', // Replace with the user's phone number
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          // Automatic verification if the user's phone number is in the possession of the device
-          await _auth.signInWithCredential(credential);
-          // Navigate to the next screen or perform any action
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print('Verification Failed: ${e.message}');
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          setState(() {
-            _verificationId = verificationId;
-          });
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          // Auto-retrieval callback
-        },
-        timeout: Duration(seconds: 60), // Timeout for user to enter the code
-      );
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // Future<void> _verifyPhoneNumber() async {
+  //   try {
+  //     await _auth.verifyPhoneNumber(
+  //       phoneNumber: '+923113516459', // Replace with the user's phone number
+  //       verificationCompleted: (PhoneAuthCredential credential) async {
+  //         // Automatic verification if the user's phone number is in the possession of the device
+  //         await _auth.signInWithCredential(credential);
+  //         // Navigate to the next screen or perform any action
+  //       },
+  //       verificationFailed: (FirebaseAuthException e) {
+  //         print('Verification Failed: ${e.message}');
+  //       },
+  //       codeSent: (String verificationId, int? resendToken) {
+  //         setState(() {
+  //           _verificationId = verificationId;
+  //         });
+  //       },
+  //       codeAutoRetrievalTimeout: (String verificationId) {
+  //         // Auto-retrieval callback
+  //       },
+  //       timeout: Duration(seconds: 60), // Timeout for user to enter the code
+  //     );
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Phone Number"),
+          title: Text("Phone Number",style: TextStyle(color: AppColors.black,fontSize: responsivefonts(2.5, context),fontWeight:FontWeight.bold)),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: <Widget>[
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Theme.of(context).primaryColor,
-                child: const SvgIcon("assets/icons/call_icon.svg",
-                    width: 60, height: 60, color: Colors.white),
+               Image.asset(
+                AppImages.logonew,
+                height: heightPercentageToDP(20, context),
               ),
               const SizedBox(height: 10),
               const Text("sign in with phone number",
@@ -103,12 +109,19 @@ String _verificationId = '';
                       },
                     ),
                     const SizedBox(height: 20),
-                    CustomElevatedButton(text: 'CONTINUE', onPressed: () => {
-                      // _verifyPhoneNumber()
-                      Navigator.pushNamed(context,RoutesName.OtpVerification)
-                    }),
+                    CustomElevatedButton(
+                        text: 'CONTINUE',
+                        onPressed: () => {
+                              // _verifyPhoneNumber()
+                              // Navigator.pushNamed(context,RoutesName.OtpVerification)
+                              _phoneNumber =
+                                  '${_phoneCode}${_numberController.text}',
+
+                              // AuthenticationProvider()
+                              //     .sighnUpWithPhoneNumber(context, _phoneNumber)
+                              Navigator.pushNamed(context, RoutesName.Home)
+                            }),
                     VerticalSpace(),
-                  
                   ],
                 ),
               ),

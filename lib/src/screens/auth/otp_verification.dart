@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
+import 'package:sobarbabe/src/provider/auth_provider.dart';
 import 'package:sobarbabe/src/widgets/index.dart';
 
 class OtpVerification extends StatefulWidget {
@@ -15,6 +16,8 @@ class OtpVerification extends StatefulWidget {
 class _OtpVerificationState extends State<OtpVerification> {
    final FirebaseAuth _auth = FirebaseAuth.instance;
 String _verificationId = '';
+ 
+
     Future<void> _signInWithPhoneNumber(String smsCode) async {
       var user;
     try {
@@ -34,6 +37,7 @@ String _verificationId = '';
   
   @override
   Widget build(BuildContext context) {
+   String? varifiedId = ModalRoute.of(context)?.settings.arguments as String?;
     return Scaffold(
       body: Container(
           padding:
@@ -52,7 +56,7 @@ String _verificationId = '';
                 height: 2,
               ),
               OtpTextField(
-                numberOfFields: 5,
+                numberOfFields: 6,
                 borderColor: Color(0xFF512DA8),
                 //set to true to show as box or false to show as dash
                 showFieldAsBox: true,
@@ -72,6 +76,7 @@ String _verificationId = '';
                   text: 'CONTINUE',
                   onPressed: () {
                     print('code======' + code.toString());
+                    AuthenticationProvider().verifPhoneNumberOtp(context, code, varifiedId!);
                   }),
             ],
           )),

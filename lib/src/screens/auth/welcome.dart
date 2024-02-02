@@ -63,7 +63,7 @@ class _WelcomeState extends State<Welcome> {
                   child: CustomElevatedButton(
                       text: 'Login with phone number',
                       onPressed: () {
-                         Navigator.pushNamed(
+                        Navigator.pushNamed(
                             context, RoutesName.LoginWithPhoneNumber);
                       }),
                 ),
@@ -75,10 +75,7 @@ class _WelcomeState extends State<Welcome> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: CustomElevatedButton(
-                      text: 'Login with email',
-                      onPressed: () {
-                      
-                      }),
+                      text: 'Login with email', onPressed: () {}),
                 ),
               ),
               const SizedBox(height: 15),
@@ -86,10 +83,25 @@ class _WelcomeState extends State<Welcome> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
                   'Already have account',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
+                SizedBox(
+                  width: widthPercentageToDP(2, context),
+                ),
+                InkWell(
+                  onTap: () {
+                    
+                  },
+                  child: Text(
+                    'SignUp',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold,fontSize: responsivefonts(2, context)),
+                    textAlign: TextAlign.center,
+                    
+                  ),
+                )
               ]),
 
               const SizedBox(
