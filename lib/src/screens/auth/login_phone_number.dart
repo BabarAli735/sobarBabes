@@ -119,7 +119,7 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
 
                               // AuthenticationProvider()
                               //     .sighnUpWithPhoneNumber(context, _phoneNumber)
-                              Navigator.pushNamed(context, RoutesName.Home)
+                              Navigator.pushNamed(context, RoutesName.EditProfileScreen)
                             }),
                     VerticalSpace(),
                   ],

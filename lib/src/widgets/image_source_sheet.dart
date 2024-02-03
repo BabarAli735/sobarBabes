@@ -94,6 +94,7 @@ class ImageSourceSheet extends StatelessWidget {
               label: Text("gallery",
                   style: const TextStyle(fontSize: 16)),
               onPressed: () async {
+               
                 // Get image from device gallery
                 final pickedFile = await picker.pickImage(
                   source: ImageSource.gallery,
@@ -108,8 +109,7 @@ class ImageSourceSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: TextButton.icon(
-              icon: const SvgIcon("assets/icons/camera_icon.svg",
-                  width: 20, height: 20),
+              icon: const Icon(Icons.camera_alt_outlined, color: Colors.grey, size: 27),
               label: Text("camera",
                   style: const TextStyle(fontSize: 16)),
               onPressed: () async {
