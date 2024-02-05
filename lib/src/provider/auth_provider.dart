@@ -245,7 +245,7 @@ class AuthenticationProvider with ChangeNotifier {
     return age;
   }
 
-  Future<String> uploadFile({
+  Future<String> uploadFile( {
     required File file,
     required String path,
     required String userId,

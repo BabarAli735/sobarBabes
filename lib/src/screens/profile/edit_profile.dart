@@ -183,8 +183,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 CustomElevatedButton(
                     text: 'Save',
                     onPressed: () {
-                      
-//                   User user
+                     String url= AuthenticationProvider().uploadFile(file: file, path: file.toString(), userId: '231') as String;
+print('url======='+url);
+//                 
+//  User user
 // =new User(userId: '123', userProfilePhoto: userProfilePhoto, userFullname: userFullname, userGender: userGender, userSexual: userSexual, userBirthDay: userBirthDay, userBirthMonth: userBirthMonth, userBirthYear: userBirthYear, userSobarDay: userSobarDay, userSobarMonth: userSobarMonth, userSobarYear: userSobarYear, userSchool: userSchool, userJobTitle: userJobTitle, userBio: userBio, userPhoneNumber: userPhoneNumber, userEmail: userEmail, userGallery: userGallery, userCountry: userCountry, userLocality: userLocality, userGeoPoint: userGeoPoint, userSettings: userSettings, userStatus: userStatus, userLevel: userLevel, userIsVerified: userIsVerified, userRegDate: userRegDate, userLastLogin: userLastLogin, userDeviceToken: userDeviceToken, userTotalLikes: userTotalLikes, userTotalVisits: userTotalVisits, userTotalDisliked: userTotalDisliked)                  AuthenticationProvider().createUser({
 //                     'abc':'ss'
 //                   });
