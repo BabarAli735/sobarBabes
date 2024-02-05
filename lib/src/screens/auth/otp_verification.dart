@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:provider/provider.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/provider/auth_provider.dart';
@@ -37,7 +38,9 @@ String _verificationId = '';
   
   @override
   Widget build(BuildContext context) {
-   String? varifiedId = ModalRoute.of(context)?.settings.arguments as String?;
+    var authProvider = Provider.of<AuthenticationProvider>(context);
+   String? data = ModalRoute.of(context)?.settings.arguments as String?;
+   print(data);
     return Scaffold(
       body: Container(
           padding:
@@ -76,7 +79,8 @@ String _verificationId = '';
                   text: 'CONTINUE',
                   onPressed: () {
                     print('code======' + code.toString());
-                    AuthenticationProvider().verifPhoneNumberOtp(context, code, varifiedId!);
+                    print('phoneNumber======' + authProvider.phoneNumber.toString());
+                     authProvider.verifPhoneNumberOtp(context, code, authProvider.varifiedId,authProvider.phoneNumber);
                   }),
             ],
           )),

@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:sobarbabe/src/constants/access_token_manager.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/models/user.dart';
 // import 'package:scoped_model/scoped_model.dart';
 import 'package:sobarbabe/src/models/user_models.dart';
 import 'package:sobarbabe/src/provider/auth_provider.dart';
+import 'package:sobarbabe/src/routes/routes_names.dart';
+import 'package:sobarbabe/src/utills/utills.dart';
 import 'package:sobarbabe/src/widgets/SvgIcon.dart';
 import 'package:sobarbabe/src/widgets/dialogs/common_dialogs.dart';
 import 'package:sobarbabe/src/widgets/image_source_sheet.dart';
@@ -27,13 +30,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _schoolController = TextEditingController();
   final _jobController = TextEditingController();
   final _bioController = TextEditingController();
+  final _username = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     /// Initialization
     var authProvider = Provider.of<AuthenticationProvider>(context);
-    print('+++++++' + authProvider.profileImage.toString());
     File file = authProvider.profileImage ?? File('default/path/to/image.jpg');
+    print('phonenumber'+authProvider.phoneNumber);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -109,7 +113,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 10),
                 const Center(
-                  child: Text("profile_photo",
+                  child: Text("profile photo",
                       style: TextStyle(fontSize: 18),
                       textAlign: TextAlign.center),
                 ),
@@ -121,10 +125,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                 /// School field
                 TextFormField(
-                  controller: _schoolController,
+                  controller: _username,
                   decoration: const InputDecoration(
-                      labelText: "school",
-                      hintText: "enter your school name",
+                      labelText: "User Name",
+                      hintText: "enter your user name",
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       prefixIcon: Padding(
                         padding: EdgeInsets.all(9.0),
@@ -132,7 +136,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       )),
                   validator: (school) {
                     if (school == null) {
-                      return "please_enter_your_school_name";
+                      return "enter your relational status";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                TextFormField(
+                  controller: _schoolController,
+                  decoration: const InputDecoration(
+                      labelText: "Status",
+                      hintText: "enter your relational status",
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(9.0),
+                        child: SvgIcon("assets/icons/university_icon.svg"),
+                      )),
+                  validator: (school) {
+                    if (school == null) {
+                      return "enter your relational status";
                     }
                     return null;
                   },
@@ -142,11 +165,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 /// Job title field
                 TextFormField(
                   controller: _jobController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: "job_title",
-                      hintText: "enter_your_job_title",
+                      hintText: "enter your job_title",
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      prefixIcon: const Padding(
+                      prefixIcon: Padding(
                         padding: EdgeInsets.all(12.0),
                         child: SvgIcon("assets/icons/job_bag_icon.svg"),
                       )),
@@ -182,12 +205,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 20),
                 CustomElevatedButton(
                     text: 'Save',
-                    onPressed: () {
-                      
-//                   User user
-// =new User(userId: '123', userProfilePhoto: userProfilePhoto, userFullname: userFullname, userGender: userGender, userSexual: userSexual, userBirthDay: userBirthDay, userBirthMonth: userBirthMonth, userBirthYear: userBirthYear, userSobarDay: userSobarDay, userSobarMonth: userSobarMonth, userSobarYear: userSobarYear, userSchool: userSchool, userJobTitle: userJobTitle, userBio: userBio, userPhoneNumber: userPhoneNumber, userEmail: userEmail, userGallery: userGallery, userCountry: userCountry, userLocality: userLocality, userGeoPoint: userGeoPoint, userSettings: userSettings, userStatus: userStatus, userLevel: userLevel, userIsVerified: userIsVerified, userRegDate: userRegDate, userLastLogin: userLastLogin, userDeviceToken: userDeviceToken, userTotalLikes: userTotalLikes, userTotalVisits: userTotalVisits, userTotalDisliked: userTotalDisliked)                  AuthenticationProvider().createUser({
-//                     'abc':'ss'
-//                   });
+                    onPressed: () async {
+                      // if (Utils.isNullOrEmpty(file as String?)) {
+                      //   Utils.flushBarErrorMessage(
+                      //       'Please Enter User Name', context);
+                      //   return;
+                      // }
+                      if (Utils.isNullOrEmpty(_schoolController.text)) {
+                        Utils.flushBarErrorMessage(
+                            'Please Enter User Name', context);
+                        return;
+                      }
+                      if (Utils.isNullOrEmpty(_jobController.text)) {
+                        Utils.flushBarErrorMessage(
+                            'Please Enter User Name', context);
+                        return;
+                      }
+                      if (Utils.isNullOrEmpty(_bioController.text)) {
+                        Utils.flushBarErrorMessage(
+                            'Please Enter User Name', context);
+                        return;
+                      }
+                      String image;
+                      if (file != null) {
+                        image = await authProvider.uploadingImage(file);
+                      } else {
+                        image = '';
+                      }
+
+                      print(authProvider.phoneNumber.toString());
+                      // UserModel userModel = UserModel(
+                      //     userBio: _bioController.text,
+                      //     userId: DateTime.now().toString(),
+                      //     username: _username.text,
+                      //     userPhoneNumber: authProvider.phoneNumber,
+                      //     userPhotoLink: image.toString(),
+                      //     userJobTitle: _jobController.text,
+                      //     userStatus: _schoolController.text);
+                      // authProvider.createUser(userModel);
+                      // await AccessTokenManager.saveAccessToken(
+                      //     userModel.toString());
+                      // await AccessTokenManager.savePhoneNumber(
+                      //     userModel.userPhoneNumber.toString());
+                      // // ignore: use_build_context_synchronously
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, RoutesName.Home, (route) => false);
                     })
               ],
             ),
