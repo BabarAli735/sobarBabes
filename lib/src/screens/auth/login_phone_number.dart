@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
@@ -30,43 +31,51 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
   String? _phoneCode = '+1';
   String _verificationId = '';
 
-  // Future<void> _verifyPhoneNumber() async {
-  //   try {
-  //     await _auth.verifyPhoneNumber(
-  //       phoneNumber: '+923113516459', // Replace with the user's phone number
-  //       verificationCompleted: (PhoneAuthCredential credential) async {
-  //         // Automatic verification if the user's phone number is in the possession of the device
-  //         await _auth.signInWithCredential(credential);
-  //         // Navigate to the next screen or perform any action
-  //       },
-  //       verificationFailed: (FirebaseAuthException e) {
-  //         print('Verification Failed: ${e.message}');
-  //       },
-  //       codeSent: (String verificationId, int? resendToken) {
-  //         setState(() {
-  //           _verificationId = verificationId;
-  //         });
-  //       },
-  //       codeAutoRetrievalTimeout: (String verificationId) {
-  //         // Auto-retrieval callback
-  //       },
-  //       timeout: Duration(seconds: 60), // Timeout for user to enter the code
-  //     );
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  // }
+  Future<void> _verifyPhoneNumber() async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber:
+            '${_phoneCode}${_numberController.text}', // Replace with the user's phone number
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Automatic verification if the user's phone number is in the possession of the device
+          await _auth.signInWithCredential(credential);
+          // Navigate to the next screen or perform any action
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print('Verification Failed: ${e.message}');
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            _verificationId = verificationId;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Auto-retrieval callback
+        },
+        timeout: Duration(seconds: 60), // Timeout for user to enter the code
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthenticationProvider>(context);
+    print(authProvider.varifiedId);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Phone Number",style: TextStyle(color: AppColors.black,fontSize: responsivefonts(2.5, context),fontWeight:FontWeight.bold)),
+          title: Text("Phone Number",
+              style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: responsivefonts(2.5, context),
+                  fontWeight: FontWeight.bold)),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: <Widget>[
-               Image.asset(
+              Image.asset(
                 AppImages.logonew,
                 height: heightPercentageToDP(20, context),
               ),
@@ -112,14 +121,11 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
                     CustomElevatedButton(
                         text: 'CONTINUE',
                         onPressed: () => {
-                              // _verifyPhoneNumber()
-                              // Navigator.pushNamed(context,RoutesName.OtpVerification)
                               _phoneNumber =
                                   '${_phoneCode}${_numberController.text}',
 
-                              // AuthenticationProvider()
-                              //     .sighnUpWithPhoneNumber(context, _phoneNumber)
-                              Navigator.pushNamed(context, RoutesName.EditProfileScreen)
+                              authProvider.sighnUpWithPhoneNumber(
+                                  context, _phoneNumber,  )
                             }),
                     VerticalSpace(),
                   ],
