@@ -71,91 +71,107 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
                   color: AppColors.white,
                   fontSize: responsivefonts(2.5, context),
                   fontWeight: FontWeight.bold)),
-                  iconTheme: IconThemeData(color: AppColors.white),
+          iconTheme: IconThemeData(color: AppColors.white),
         ),
-        body: SingleChildScrollView(
-        
-          child: Container(
-             child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
-            Theme.of(context).primaryColor,
-            Colors.black.withOpacity(.4)
-          ]),
-            image: DecorationImage(
-              
-              image: AssetImage('assets/images/background_image.jpg'),
+        body: Stack(
+          children: [
+            Image.asset(
+              'assets/images/background_image.jpg',
               fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
             ),
-          ),
-          padding: const EdgeInsets.all(16),
-            child: Column(
-              children: <Widget>[
-                Image.asset(
-                  AppImages.logonew,
-                  height: heightPercentageToDP(20, context),
-                ),
-                const SizedBox(height: 10),
-                const Text("sign in with phone number",
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 20,color: AppColors.white)),
-                const SizedBox(height: 25),
-                const Text(
-                    "please enter your phone number and we will send you a sms",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-                const SizedBox(height: 22),
-            
-                /// Form
-                Form(
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _numberController,
-                        decoration: InputDecoration(
-                            labelText: 'Phone number',
-                            hintText: 'Enter Phone number',
-                            
-                            labelStyle: TextStyle(color: AppColors.white),
-                            hintStyle: TextStyle(color: AppColors.white),
-                            
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: CountryCodePicker(
-                                  alignLeft: false,textStyle: TextStyle(color: AppColors.white),
-                                  initialSelection: _initialSelection,
-                                  onChanged: (country) {
-                                    /// Get country code
-                                    _phoneCode = country.dialCode!;
-                                  }),
-                            )),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-                        ],
-                        validator: (number) {
-                          // Basic validation
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      CustomElevatedButton(
-                          text: 'CONTINUE',
-                          onPressed: () => {
-                                _phoneNumber =
-                                    '${_phoneCode}${_numberController.text}',
-            
-                                authProvider.sighnUpWithPhoneNumber(
-                                    context, _phoneNumber,  )
-                              }),
-                      VerticalSpace(),
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    colors: [
+                      Theme.of(context).primaryColor,
+                      Colors.black.withOpacity(.4)
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        )));
+                child: SingleChildScrollView(
+                  child: Container(
+                    
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: <Widget>[
+                        Image.asset(
+                          AppImages.logonew,
+                          height: heightPercentageToDP(20, context),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text("sign in with phone number",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20, color: AppColors.white)),
+                        const SizedBox(height: 25),
+                        const Text(
+                            "please enter your phone number and we will send you a sms",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                        const SizedBox(height: 22),
+
+                        /// Form
+                        Form(
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                controller: _numberController,
+                                decoration: InputDecoration(
+                                    labelText: 'Phone number',
+                                    hintText: 'Enter Phone number',
+                                    labelStyle:
+                                        TextStyle(color: AppColors.white),
+                                    hintStyle:
+                                        TextStyle(color: AppColors.white),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
+                                    prefixIcon: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: CountryCodePicker(
+                                          alignLeft: false,
+                                          textStyle:
+                                              TextStyle(color: AppColors.white),
+                                          initialSelection: _initialSelection,
+                                          onChanged: (country) {
+                                            /// Get country code
+                                            _phoneCode = country.dialCode!;
+                                          }),
+                                    )),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[0-9]"))
+                                ],
+                                validator: (number) {
+                                  // Basic validation
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              CustomElevatedButton(
+                                  text: 'CONTINUE',
+                                  onPressed: () => {
+                                        _phoneNumber =
+                                            '${_phoneCode}${_numberController.text}',
+                                        authProvider.sighnUpWithPhoneNumber(
+                                          context,
+                                          _phoneNumber,
+                                        )
+                                      }),
+                              VerticalSpace(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ))
+          ],
+        ));
   }
 }
