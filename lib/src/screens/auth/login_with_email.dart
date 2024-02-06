@@ -285,8 +285,12 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                   child: Column(
                     children: [
                      CustomElevatedButton(text: 'Login', onPressed: (){
+                   authProvider.setLoading(true);
                       authProvider.signInWithEmailAndPassword(emailController.text, passwordController.text,context);
-                     })
+                    authProvider.setLoading(false);
+                     },
+                     
+                     )
                     ],
                   ),
                 ),

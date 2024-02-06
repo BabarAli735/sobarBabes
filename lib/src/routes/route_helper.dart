@@ -8,6 +8,7 @@ import 'package:sobarbabe/src/screens/auth/otp_verification.dart';
 import 'package:sobarbabe/src/screens/auth/signUp.dart';
 import 'package:sobarbabe/src/screens/auth/splash_screen.dart';
 import 'package:sobarbabe/src/screens/auth/welcome.dart';
+import 'package:sobarbabe/src/screens/home/BottomTab.dart';
 import 'package:sobarbabe/src/screens/home/home.dart';
 import 'package:sobarbabe/src/screens/profile/edit_profile.dart';
 
@@ -41,7 +42,7 @@ class Routes {
             settings: settings);
       case RoutesName.Home:
         return MaterialPageRoute(
-            builder: (BuildContext context) =>  Home(),
+            builder: (BuildContext context) =>  BottomTab(),
             settings: settings);
       case RoutesName.LoginWithEmail:
         return MaterialPageRoute(

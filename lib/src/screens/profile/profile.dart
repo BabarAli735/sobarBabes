@@ -13,14 +13,16 @@ import 'package:sobarbabe/src/utills/utills.dart';
 import 'package:sobarbabe/src/widgets/image_source_sheet.dart';
 import 'package:sobarbabe/src/widgets/index.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
+  late UserModel userProfileData;
+  late AuthenticationProvider authenticationProvider;
   // Variables
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -28,6 +30,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _jobController = TextEditingController();
   final _bioController = TextEditingController();
   final _username = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    super.initState();
+    // Start the confetti loop
+
+    authenticationProvider =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+    userProfileData = UserModel(
+        userBio: '',
+        userId: '',
+        userPhoneNumber: '',
+        userPhotoLink: '',
+        userJobTitle: '',
+        userStatus: '',
+        username: '');
+    _loadUserProfileData(authenticationProvider);
+    // Use yourProvider here
+    // For example: yourProvider.someMethod();
+  }
+
+  Future<void> _loadUserProfileData(authenticationProvider) async {
+    try {
+      var token = await AccessTokenManager.getNumber();
+      // print('token====' + token.toString());
+      UserModel userModel = await authenticationProvider.getUserDetail(token!);
+      // print('userModel===' + userModel.username);
+      // Map<String, dynamic> userData = await fetchUserProfileData();
+
+      setState(() {
+        userProfileData = userModel;
+      });
+    } catch (error) {
+      // Handle any errors that may occur during data loading
+      print("Error loading user profile data: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         body: Stack(
           children: [
             Image.asset(
-              'assets/images/background_image.jpg',
+              AppImages.background_image,
               fit: BoxFit.cover,
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
@@ -78,30 +119,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: Center(
                           child: Stack(
                             children: <Widget>[
-                              authProvider.profileImage == null
-                                  ? CircleAvatar(
-                                      backgroundImage: const NetworkImage(
-                                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScGQQPJTeRXYxfbXVhLLXPl4aCJCexZ4dS7Q&usqp=CAU'),
-                                      radius: widthPercentageToDP(18, context),
-                                      backgroundColor:
-                                          Theme.of(context).primaryColor,
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          widthPercentageToDP(35, context)),
-                                      child: Container(
-                                        color: Colors
-                                            .white, // Set the background color of the container
-                                        child: Image(
-                                          fit: BoxFit.fill,
-                                          image: FileImage(file),
-                                          height:
-                                              widthPercentageToDP(35, context),
-                                          width:
-                                              widthPercentageToDP(35, context),
-                                        ),
-                                      ),
-                                    ),
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    userProfileData!.userPhotoLink),
+                                radius: widthPercentageToDP(18, context),
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
 
                               /// Edit icon
                               Positioned(
@@ -120,10 +143,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         onTap: () async {
                           /// Update profile image
-                          _selectImage(
-                              imageUrl: 'userModel.user.userProfilePhoto',
-                              path: 'profile',
-                              authProvider: authProvider);
+                          Navigator.pushNamed(
+                              context, RoutesName.EditProfileScreen);
                         },
                       ),
                       const SizedBox(height: 10),
@@ -144,18 +165,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _username,
                         decoration: InputDecoration(
                             labelText: "User Name",
-                            hintText: "enter your user name",
+                            hintText: userProfileData!.username,
                             hintStyle: TextStyle(color: AppColors.white),
                             labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  widthPercentageToDP(5, context)),
-                              // Border when focused
-                              borderSide: const BorderSide(
-                                  color: AppColors.primary), // Border color
-                            ),
-                            enabledBorder: OutlineInputBorder(
+                            enabled: false,
+                            disabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                   widthPercentageToDP(5, context)),
                               // Border when not focused
@@ -182,18 +197,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _schoolController,
                         decoration: InputDecoration(
                             labelText: "Status",
-                            hintText: "enter your relational status",
+                            hintText: userProfileData.userStatus,
                             hintStyle: TextStyle(color: AppColors.white),
                             labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  widthPercentageToDP(5, context)),
-                              // Border when focused
-                              borderSide: const BorderSide(
-                                  color: AppColors.primary), // Border color
-                            ),
-                            enabledBorder: OutlineInputBorder(
+                            enabled: false,
+                            disabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                   widthPercentageToDP(5, context)),
                               // Border when not focused
@@ -203,7 +212,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             prefixIcon: const Padding(
                               padding: EdgeInsets.all(9.0),
                               child: Icon(
-                                Icons.private_connectivity,
+                                Icons.person,
                                 color: AppColors.white,
                               ),
                             )),
@@ -221,16 +230,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _jobController,
                         decoration: InputDecoration(
                             labelText: "job_title",
-                            hintText: "enter your job_title",
+                            hintText: userProfileData!.userJobTitle,
+                            hintStyle: TextStyle(color: AppColors.white),
+                            labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  widthPercentageToDP(5, context)),
-                              // Border when focused
-                              borderSide: const BorderSide(
-                                  color: AppColors.primary), // Border color
-                            ),
-                            enabledBorder: OutlineInputBorder(
+                            enabled: false,
+                            disabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                   widthPercentageToDP(5, context)),
                               // Border when not focused
@@ -240,7 +245,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             prefixIcon: const Padding(
                               padding: EdgeInsets.all(9.0),
                               child: Icon(
-                                Icons.join_full,
+                                Icons.person,
                                 color: AppColors.white,
                               ),
                             )),
@@ -259,16 +264,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         maxLines: 4,
                         decoration: InputDecoration(
                           labelText: "bio",
-                          hintText: "write about you",
+                          hintText: userProfileData!.userBio,
+                          hintStyle: TextStyle(color: AppColors.white),
+                          labelStyle: TextStyle(color: AppColors.white),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                                widthPercentageToDP(5, context)),
-                            // Border when focused
-                            borderSide: const BorderSide(
-                                color: AppColors.primary), // Border color
-                          ),
-                          enabledBorder: OutlineInputBorder(
+                          enabled: false,
+                          disabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                                 widthPercentageToDP(5, context)),
                             // Border when not focused

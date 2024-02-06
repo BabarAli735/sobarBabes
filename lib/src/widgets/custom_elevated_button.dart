@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
+import 'package:sobarbabe/src/provider/auth_provider.dart';
 import 'package:sobarbabe/src/widgets/medium_text.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -12,6 +13,7 @@ class CustomElevatedButton extends StatelessWidget {
   final ButtonStyle? buttonStyle;
   final double height;
   final double? width;
+  final bool? isLoading;
 
   CustomElevatedButton(
       {required this.text,
@@ -20,16 +22,18 @@ class CustomElevatedButton extends StatelessWidget {
       this.textColor = AppColors.white,
       this.height = 7,
       this.width = 0,
+      this.isLoading = false,
       this.buttonStyle});
 
   @override
   Widget build(BuildContext context) {
- 
+    var authProvider = Provider.of<AuthenticationProvider>(context);
+  
     return SizedBox(
       height: heightPercentageToDP(height, context),
       width: width! > 0 ? widthPercentageToDP(width!, context) : null,
       child: ElevatedButton(
-        onPressed:  onPressed,
+        onPressed: onPressed,
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -40,23 +44,23 @@ class CustomElevatedButton extends StatelessWidget {
           ),
         ).merge(buttonStyle),
         child: Center(
-          // child: authProvider.loading
-          //     ? Container(
-          //         height: widthPercentageToDP(5, context),
-          //         width: widthPercentageToDP(5, context),
-          //         child: const CircularProgressIndicator(
-          //           color: AppColors.white,
-          //           strokeWidth: 2,
-          //         ),
-          //       )
-          //     : MediumText(
-          //         text: text,
-          //         color: textColor,
-          //       ),
-          child: MediumText(
+          child: authProvider.loading
+              ? Container(
+                  height: widthPercentageToDP(5, context),
+                  width: widthPercentageToDP(5, context),
+                  child: const CircularProgressIndicator(
+                    color: AppColors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : MediumText(
                   text: text,
                   color: textColor,
-                )
+                ),
+          // child: MediumText(
+          //         text: text,
+          //         color: textColor,
+          //       )
         ),
       ),
     );
@@ -84,13 +88,11 @@ class CustomElevatedButtonWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
-
     return SizedBox(
       height: heightPercentageToDP(height, context),
       width: width! > 0 ? widthPercentageToDP(width!, context) : null,
       child: ElevatedButton(
-        onPressed:  onPressed,
+        onPressed: onPressed,
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -101,16 +103,14 @@ class CustomElevatedButtonWithIcon extends StatelessWidget {
           ),
         ).merge(buttonStyle),
         child: Center(
-          child: Container(
-                  height: widthPercentageToDP(5, context),
-                  width: widthPercentageToDP(5, context),
-                  child: const CircularProgressIndicator(
-                    color: AppColors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-              
-        ),
+            child: Container(
+          height: widthPercentageToDP(5, context),
+          width: widthPercentageToDP(5, context),
+          child: const CircularProgressIndicator(
+            color: AppColors.white,
+            strokeWidth: 2,
+          ),
+        )),
       ),
     );
   }

@@ -224,7 +224,8 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signUpWithEmailAndPassword(email, password, name,context) async {
+  Future<void> signUpWithEmailAndPassword(
+      email, password, name, context) async {
     try {
       UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
@@ -234,7 +235,8 @@ class AuthenticationProvider with ChangeNotifier {
 
       // Successfully signed in, you can navigate to the next screen or perform any other actions.
       print('User signed in: ${userCredential.user!.uid}');
-      Navigator.pushNamed(context, RoutesName.EditProfileScreen,arguments:email);
+      Navigator.pushNamed(context, RoutesName.EditProfileScreen,
+          arguments: email);
     } on FirebaseAuthException catch (e) {
       print(e);
       if (e.code == 'user-not-found') {
@@ -247,18 +249,23 @@ class AuthenticationProvider with ChangeNotifier {
       }
     }
   }
-  Future<void> signInWithEmailAndPassword(email, password,context) async {
+
+  Future<void> signInWithEmailAndPassword(email, password, context) async {
     try {
+      
       UserCredential userCredential =
           await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      
       // Successfully signed in, you can navigate to the next screen or perform any other actions.
       print('User signed in: ${userCredential.user!.email.toString()}');
-       await AccessTokenManager.savePhoneNumber(userCredential.user!.email.toString());
+      await AccessTokenManager.savePhoneNumber(
+          userCredential.user!.email.toString());
       Navigator.pushNamed(context, RoutesName.Home);
     } on FirebaseAuthException catch (e) {
+     
       print(e);
       Utils.flushBarErrorMessage(e.toString(), context);
       if (e.code == 'user-not-found') {
@@ -271,7 +278,8 @@ class AuthenticationProvider with ChangeNotifier {
       }
     }
   }
-   Future<void> _signOut() async {
+
+  Future<void> _signOut() async {
     try {
       await _firebaseAuth.signOut();
       print('User signed out');
