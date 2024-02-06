@@ -54,53 +54,44 @@ class AuthenticationProvider with ChangeNotifier {
     context,
     String number,
   ) async {
+    if (number.isEmpty) {
+      Utils.flushBarErrorMessage('Please Enter Valid Number', context);
+      return;
+    }
 
-    var data={
-      'phoneNumber':phoneNumber,
-      'id':'abbaba'
-    };
-      Navigator.pushNamed(
-            context,
-            RoutesName.OtpVerification,
-            arguments: data,
-          );
-    // if (number.isEmpty) {
+    // if (!Utils.isValidPhoneNumber(number)) {
+
     //   Utils.flushBarErrorMessage('Please Enter Valid Number', context);
     //   return;
     // }
 
-    // // if (!Utils.isValidPhoneNumber(number)) {
-
-    // //   Utils.flushBarErrorMessage('Please Enter Valid Number', context);
-    // //   return;
-    // // }
-
-    // setLoading(true);
-    // try {
-    //   await _auth.verifyPhoneNumber(
-    //     phoneNumber: number,
-    //     verificationCompleted: (PhoneAuthCredential credential) {},
-    //     verificationFailed: (FirebaseAuthException e) {
-    //       // Utils.flushBarErrorMessage('verificationFailed $e', _context!);
-    //       Utils.toastMessage(e.toString());
-    //       setLoading(false);
-    //     },
-    //     codeSent: (String verificationId, int? resendToken) {
-    //       Navigator.pushNamed(
-    //         context,
-    //         RoutesName.OtpVerification,
-    //         arguments: phoneNumber,
-    //       );
-    //     },
-    //     codeAutoRetrievalTimeout: (String verificationId) {
-    //       setLoading(false);
-    //     },
-    //   );
-    // } catch (e) {
-    //   Utils.toastMessage(e.toString());
-    //   return null;
-    // }
-    // return null;
+    setLoading(true);
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: number,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          // Utils.flushBarErrorMessage('verificationFailed $e', _context!);
+          Utils.toastMessage(e.toString());
+          setLoading(false);
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          var data = {'phoneNumber': number, 'id': verificationId};
+          Navigator.pushNamed(
+            context,
+            RoutesName.OtpVerification,
+            arguments: data,
+          );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          setLoading(false);
+        },
+      );
+    } catch (e) {
+      Utils.toastMessage(e.toString());
+      return null;
+    }
+    return null;
   }
 
   Future<User?> verifPhoneNumberOtp(
@@ -108,7 +99,7 @@ class AuthenticationProvider with ChangeNotifier {
     print('phoneNumber====' + phoneNumber.toString());
     try {
       setLoading(true);
-      User? newUser = await verifyOtp(otp,id);
+      User? newUser = await verifyOtp(otp, id);
       print('phoneNumber====' + phoneNumber.toString());
       if (newUser != null) {
         try {
@@ -190,7 +181,7 @@ class AuthenticationProvider with ChangeNotifier {
   Future<UserModel> getUserDetail(String phoneNumber) async {
     final snapshot = await _db
         .collection('Users')
-        .where('phoneNumber', isEqualTo: phoneNumber)
+        .where('userPhoneNumber', isEqualTo: phoneNumber)
         .get();
     final userData = snapshot.docs.map((e) => UserModel.fromSnapShot(e)).single;
     return userData;
@@ -230,6 +221,62 @@ class AuthenticationProvider with ChangeNotifier {
       Utils.toastMessage(e.toString());
       setLoading(false);
       return null;
+    }
+  }
+
+  Future<void> signUpWithEmailAndPassword(email, password, name,context) async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Successfully signed in, you can navigate to the next screen or perform any other actions.
+      print('User signed in: ${userCredential.user!.uid}');
+      Navigator.pushNamed(context, RoutesName.EditProfileScreen,arguments:email);
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided.');
+      } else {
+        print('Error: ${e.message}');
+        Utils.flushBarErrorMessage(e.message.toString(), context);
+      }
+    }
+  }
+  Future<void> signInWithEmailAndPassword(email, password,context) async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Successfully signed in, you can navigate to the next screen or perform any other actions.
+      print('User signed in: ${userCredential.user!.email.toString()}');
+       await AccessTokenManager.savePhoneNumber(userCredential.user!.email.toString());
+      Navigator.pushNamed(context, RoutesName.Home);
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      Utils.flushBarErrorMessage(e.toString(), context);
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided.');
+      } else {
+        print('Error: ${e.message}');
+        Utils.flushBarErrorMessage(e.message.toString(), context);
+      }
+    }
+  }
+   Future<void> _signOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      print('User signed out');
+    } catch (e) {
+      print('Error signing out: $e');
     }
   }
 }

@@ -37,24 +37,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     /// Initialization
     var authProvider = Provider.of<AuthenticationProvider>(context);
     File file = authProvider.profileImage ?? File('default/path/to/image.jpg');
-    print('phonenumber'+authProvider.phoneNumber);
+    String? data = ModalRoute.of(context)!.settings.arguments as String?;
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: Text("edit_profile"),
-          actions: [
-            // Save changes button
-            // TextButton(
-            //   child: Text("SAVE",
-            //       style: TextStyle(color: Theme.of(context).primaryColor)),
-            //   onPressed: () {
-            //     /// Validate form
-            //     // if (_formKey.currentState!.validate()) {
-            //     //   _saveChanges();
-            //     // }
-            //   },
-            // )
-          ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(15),
@@ -233,23 +220,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         image = '';
                       }
 
-                      print(authProvider.phoneNumber.toString());
-                      // UserModel userModel = UserModel(
-                      //     userBio: _bioController.text,
-                      //     userId: DateTime.now().toString(),
-                      //     username: _username.text,
-                      //     userPhoneNumber: authProvider.phoneNumber,
-                      //     userPhotoLink: image.toString(),
-                      //     userJobTitle: _jobController.text,
-                      //     userStatus: _schoolController.text);
-                      // authProvider.createUser(userModel);
-                      // await AccessTokenManager.saveAccessToken(
-                      //     userModel.toString());
-                      // await AccessTokenManager.savePhoneNumber(
-                      //     userModel.userPhoneNumber.toString());
-                      // // ignore: use_build_context_synchronously
-                      // Navigator.pushNamedAndRemoveUntil(
-                      //     context, RoutesName.Home, (route) => false);
+                      UserModel userModel = UserModel(
+                          userBio: _bioController.text,
+                          userId: DateTime.now().toString(),
+                          username: _username.text,
+                          userPhoneNumber: data.toString(),
+                          userPhotoLink: image.toString(),
+                          userJobTitle: _jobController.text,
+                          userStatus: _schoolController.text);
+                      authProvider.createUser(userModel);
+                      await AccessTokenManager.saveAccessToken(
+                          userModel.toString());
+                      await AccessTokenManager.savePhoneNumber(
+                          userModel.userPhoneNumber.toString());
+                      // ignore: use_build_context_synchronously
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, RoutesName.Home, (route) => false);
                     })
               ],
             ),

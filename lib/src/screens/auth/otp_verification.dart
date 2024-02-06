@@ -15,32 +15,40 @@ class OtpVerification extends StatefulWidget {
 }
 
 class _OtpVerificationState extends State<OtpVerification> {
-   final FirebaseAuth _auth = FirebaseAuth.instance;
-String _verificationId = '';
- 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String _verificationId = '';
 
-    Future<void> _signInWithPhoneNumber(String smsCode) async {
-      var user;
+  Future<void> _signInWithPhoneNumber(String smsCode) async {
+    var user;
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId,
         smsCode: smsCode,
       );
-     user=  await _auth.signInWithCredential(credential);
-     print('user======'+user);
+      user = await _auth.signInWithCredential(credential);
+      print('user======' + user);
       // Navigate to the next screen or perform any action
     } catch (e) {
-      print('Error: $e'); 
+      print('Error: $e');
     }
   }
-  String code = '';
 
-  
+  String code = '';
+  String phoneNumber = '';
+  String id = '';
+
   @override
   Widget build(BuildContext context) {
     var authProvider = Provider.of<AuthenticationProvider>(context);
-   String? data = ModalRoute.of(context)?.settings.arguments as String?;
-   print(data);
+    Map<String, String>? data =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+    if (data != null) {
+      phoneNumber = data['phoneNumber'] ?? '';
+      id = data['id'] ?? '';
+
+      // Use phoneNumber and id as needed
+    }
+    print(phoneNumber);
     return Scaffold(
       body: Container(
           padding:
@@ -78,9 +86,8 @@ String _verificationId = '';
               CustomElevatedButton(
                   text: 'CONTINUE',
                   onPressed: () {
-                    print('code======' + code.toString());
-                    print('phoneNumber======' + authProvider.phoneNumber.toString());
-                     authProvider.verifPhoneNumberOtp(context, code, authProvider.varifiedId,authProvider.phoneNumber);
+                    authProvider.verifPhoneNumberOtp(
+                        context, code, id, phoneNumber);
                   }),
             ],
           )),

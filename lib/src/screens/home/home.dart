@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:sobarbabe/src/constants/access_token_manager.dart';
+import 'package:sobarbabe/src/models/user_models.dart';
+import 'package:sobarbabe/src/provider/auth_provider.dart';
 import 'package:sobarbabe/src/screens/auth/login.dart';
 import 'package:sobarbabe/src/screens/auth/welcome.dart';
 
@@ -13,24 +17,35 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home>
-    with SingleTickerProviderStateMixin {
-  Map<String, dynamic> userProfileData = {};
-
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  late UserModel userProfileData;
+  late AuthenticationProvider authenticationProvider;
   @override
   void initState() {
     super.initState();
-    _loadUserProfileData();
+
     super.initState();
     _controller = ConfettiController(duration: const Duration(seconds: 2));
     _startConfettiLoop(); // Start the confetti loop
+    Future.delayed(Duration.zero, () {
+      authenticationProvider =
+          Provider.of<AuthenticationProvider>(context, listen: false);
+      _loadUserProfileData(authenticationProvider);
+      // Use yourProvider here
+      // For example: yourProvider.someMethod();
+    });
   }
 
-  Future<void> _loadUserProfileData() async {
+  Future<void> _loadUserProfileData(authenticationProvider) async {
     try {
-      Map<String, dynamic> userData = await fetchUserProfileData();
+      var token = await AccessTokenManager.getNumber();
+      print('token====' + token.toString());
+      UserModel userModel = await authenticationProvider.getUserDetail(token!);
+      print('userModel===' + userModel.username);
+      // Map<String, dynamic> userData = await fetchUserProfileData();
+
       setState(() {
-        userProfileData = userData;
+        userProfileData = userModel;
       });
     } catch (error) {
       // Handle any errors that may occur during data loading
@@ -290,10 +305,10 @@ class _HomeState extends State<Home>
                     //       builder: (context) => ChangePasswordPage()),
                     // );
                   },
-                  child: ListTile(
+                  child: const ListTile(
                     title: Text(
                       'Change Password',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Mulish',
                         color: Colors.black,
                       ),
@@ -313,10 +328,10 @@ class _HomeState extends State<Home>
                 //   trailing: Icon(Icons.chevron_right,
                 //       color: Color.fromARGB(232, 206, 100, 255)),
                 // ),
-                ListTile(
+                const ListTile(
                   title: Text(
                     'Legal',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Mulish',
                       color: Colors.black,
                     ),
@@ -324,10 +339,10 @@ class _HomeState extends State<Home>
                   trailing: Icon(Icons.chevron_right,
                       color: Color.fromARGB(232, 206, 100, 255)),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text(
                     'Languages',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Mulish',
                       color: Colors.black,
                     ),
@@ -335,10 +350,10 @@ class _HomeState extends State<Home>
                   trailing: Icon(Icons.chevron_right,
                       color: Color.fromARGB(232, 206, 100, 255)),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text(
                     'Privacy Policy',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Mulish',
                       color: Colors.black,
                     ),
@@ -346,10 +361,10 @@ class _HomeState extends State<Home>
                   trailing: Icon(Icons.chevron_right,
                       color: Color.fromARGB(232, 206, 100, 255)),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text(
                     'Terms and Conditions',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Mulish',
                       color: Colors.black,
                     ),
@@ -362,19 +377,21 @@ class _HomeState extends State<Home>
                     await FirebaseAuth.instance.signOut();
 
                     // Navigate to Login screen and remove all previous routes
+                    // ignore: use_build_context_synchronously
+                    AccessTokenManager.removeAccessToken();
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              Welcome()), // Navigate to Login screen
+                              const Welcome()), // Navigate to Login screen
                       (Route<dynamic> route) =>
                           false, // Remove all previous routes
                     );
                   },
-                  child: ListTile(
+                  child: const ListTile(
                     title: Text(
                       'Logout',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Mulish',
                         color: Colors.black,
                       ),
@@ -425,10 +442,10 @@ class _HomeState extends State<Home>
                         onTap: () {
                           print("Tap Event");
                         },
-                        text: [
+                        text: const [
                           "   Hi! I'm your Soberiety Counter",
                         ],
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                             fontSize: 25.0,
                             fontFamily: "LEMONMILK",
                             color: Colors.black,
@@ -592,6 +609,8 @@ class _HomeState extends State<Home>
 // Function to fetch the current user's profile data
 Future<Map<String, dynamic>> fetchUserProfileData() async {
   try {
+    // var token = await AccessTokenManager.getNumber();
+    // UserModel userModel = await authProvider.getUserDetail(token);
     // Step 1: Get the current authenticated user
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -599,11 +618,11 @@ Future<Map<String, dynamic>> fetchUserProfileData() async {
     if (user != null) {
       // Step 3: Get the user's UID
       String uid = user.uid;
-
+      print('uid====' + uid.toString());
       // Step 4: Query Firestore to retrieve the user's profile data
       DocumentSnapshot<Map<String, dynamic>> userSnapshot =
           await FirebaseFirestore.instance.collection("Users").doc(uid).get();
-
+      print('userData===' + userSnapshot.toString());
       // Step 5: Check if the user document exists
       if (userSnapshot.exists) {
         // Step 6: Get the user data

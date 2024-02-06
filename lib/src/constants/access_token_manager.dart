@@ -37,5 +37,6 @@ class AccessTokenManager {
   static Future<void> removeAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_accessTokenKey);
+    await prefs.remove(_phoneNumberKey);
   }
 }

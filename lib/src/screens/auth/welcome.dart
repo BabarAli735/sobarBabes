@@ -31,7 +31,8 @@ class _WelcomeState extends State<Welcome> {
               gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
             Theme.of(context).primaryColor,
             Colors.black.withOpacity(.4)
-          ])),
+          ])
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -75,34 +76,13 @@ class _WelcomeState extends State<Welcome> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: CustomElevatedButton(
-                      text: 'Login with email', onPressed: () {}),
+                      text: 'Login with email', onPressed: () {
+                          Navigator.pushNamed(
+                            context, RoutesName.LoginWithEmail);
+                      }),
                 ),
               ),
               const SizedBox(height: 15),
-
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(
-                  'Already have account',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  width: widthPercentageToDP(2, context),
-                ),
-                InkWell(
-                  onTap: () {
-                    
-                  },
-                  child: Text(
-                    'SignUp',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold,fontSize: responsivefonts(2, context)),
-                    textAlign: TextAlign.center,
-                    
-                  ),
-                )
-              ]),
 
               const SizedBox(
                 height: 7,

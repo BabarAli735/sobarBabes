@@ -11,4 +11,5 @@ class RoutesName {
   static const String OtpVerification = 'OtpVerification_screen';
   static const String Home = 'Home_screen';
   static const String EditProfileScreen = 'EditProfileScreen_screen';
+  static const String LoginWithEmail = 'LoginWithEmail_screen';
 }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'package:sobarbabe/src/screens/auth/login.dart';
 import 'package:sobarbabe/src/screens/auth/login_phone_number.dart';
+import 'package:sobarbabe/src/screens/auth/login_with_email.dart';
 import 'package:sobarbabe/src/screens/auth/otp_verification.dart';
+import 'package:sobarbabe/src/screens/auth/signUp.dart';
 import 'package:sobarbabe/src/screens/auth/splash_screen.dart';
 import 'package:sobarbabe/src/screens/auth/welcome.dart';
 import 'package:sobarbabe/src/screens/home/home.dart';
@@ -40,6 +42,14 @@ class Routes {
       case RoutesName.Home:
         return MaterialPageRoute(
             builder: (BuildContext context) =>  Home(),
+            settings: settings);
+      case RoutesName.LoginWithEmail:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  LoginWithEmail(),
+            settings: settings);
+      case RoutesName.signUp:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  Signup(),
             settings: settings);
   
       default:

@@ -1,545 +1,325 @@
-// import 'dart:io';
+import 'package:flutter/gestures.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
-// import 'package:scoped_model/scoped_model.dart';
-// import 'package:sobarbabe/src/helpers/app_localizations.dart';
-// import 'package:sobarbabe/src/models/user.dart';
-// import 'package:sobarbabe/src/models/user_models.dart';
-// import 'package:sobarbabe/src/provider/auth_provider.dart';
-// import 'package:sobarbabe/src/screens/home/home.dart';
-// import 'package:sobarbabe/src/widgets/SvgIcon.dart';
-// import 'package:sobarbabe/src/widgets/dialogs/common_dialogs.dart';
-// import 'package:sobarbabe/src/widgets/image_source_sheet.dart';
-// import 'package:sobarbabe/src/widgets/index.dart';
-// import 'package:sobarbabe/src/widgets/show_scaffold_msg.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sobarbabe/src/helpers/responsive_functions.dart';
+import 'package:sobarbabe/src/provider/auth_provider.dart';
+import 'package:sobarbabe/src/routes/routes_names.dart';
+import 'package:sobarbabe/src/widgets/index.dart';
 
-// class SignUpScreen extends StatefulWidget {
-//   const SignUpScreen({Key? key}) : super(key: key);
+import '../../models/user.dart';
 
-//   @override
-//   _SignUpScreenState createState() => _SignUpScreenState();
-// }
+class Signup extends StatefulWidget {
+  @override
+  _SignupState createState() => _SignupState();
+}
 
-// class _SignUpScreenState extends State<SignUpScreen> {
-//   late AppLocalizations _i18n;
-//   // Variables
-//   final _formKey = GlobalKey<FormState>();
-//   final _scaffoldKey = GlobalKey<ScaffoldState>();
-//   final _nameController = TextEditingController();
-//   final _schoolController = TextEditingController();
-//   final _jobController = TextEditingController();
-//   final _bioController = TextEditingController();
+class _SignupState extends State<Signup> {
+  TextEditingController namecontroller = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passcontroller = TextEditingController();
+  bool isChecked = false;
+  bool isPasswordVisible = false;
 
-//   /// User Birthday info
-//   int _userBirthDay = 0;
-//   int _userBirthMonth = 0;
-//   int _userBirthYear = DateTime.now().year;
+  final _fromkey = GlobalKey<FormState>();
 
-//   /// User Sobar info
+  @override
+  Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthenticationProvider>(context);
 
-//   int _userSobarDay = 0;
-//   int _userSobarMonth = 0;
-//   int _userSobarYear = DateTime.now().year;
-
-//   // End
-//   DateTime _initialDateTime = DateTime.now();
-//   String? _birthday;
-//   String? _sobirity;
-
-//   File? _imageFile;
-//   bool _agreeTerms = false;
-//   String? _selectedGender;
-//   final List<String> _genders = [
-//     'Male',
-//     'Female',
-//     'Non Binary / Gender Nonconfirming',
-//     'Trans Male',
-//     'Trans Female',
-//     'Prefer Not to Disclose'
-//   ];
-
-//   final List<String> _sexual = [
-//     'Lesbian',
-//     'Gay',
-//     'Bisexual',
-//     'Transgenders',
-//     'Heterosexual',
-//     'Pansexual',
-//     'Asexual',
-//     'Prefer Not to Disclose'
-//   ];
-
-//   /// Set terms
-//   void _setAgreeTerms(bool value) {
-//     setState(() {
-//       _agreeTerms = value;
-//     });
-//   }
-
-//   /// Get image from camera / gallery
-//   void _getImage(BuildContext context) async {
-//     await showModalBottomSheet(
-//         context: context,
-//         backgroundColor: Colors.transparent,
-//         builder: (context) => ImageSourceSheet(
-//               onImageSelected: (image) {
-//                 if (image != null) {
-//                   setState(() {
-//                     _imageFile = image;
-//                   });
-//                   // close modal
-//                   Navigator.of(context).pop();
-//                 }
-//               },
-//             ));
-//   }
-
-//   void _updateUserBithdayInfo(DateTime date) {
-//     setState(() {
-//       // Update the inicial date
-//       _initialDateTime = date;
-//       // Set for label
-//       _birthday = date.toString().split(' ')[0];
-
-//       // User birthday info
-//       _userBirthDay = date.day;
-//       _userBirthMonth = date.month;
-//       _userBirthYear = date.year;
-//     });
-//   }
-
-//   void _updateUserSobarInfo(DateTime date) {
-//     setState(() {
-//       // Update the inicial date
-//       _initialDateTime = date;
-//       // Set for label
-//       _sobirity = date.toString().split(' ')[0];
-
-//       // User Sobar info
-//       _userSobarDay = date.day;
-//       _userSobarMonth = date.month;
-//       _userSobarYear = date.year;
-//     });
-//   }
-
-//   // Get Date time picker app locale
-//   DateTimePickerLocale _getDatePickerLocale() {
-//     // Inicial value
-//     DateTimePickerLocale _locale = DateTimePickerLocale.en_us;
-//     // Get the name of the current locale.
-//     switch ('eng') {
-//       // Handle your Supported Languages below:
-//       case 'en': // English
-//         _locale = DateTimePickerLocale.en_us;
-//         break;
-//     }
-//     return _locale;
-//   }
-
-//   /// Display date picker.
-//   void _showDatePicker() {
-//     DatePicker.showDatePicker(
-//       context,
-//       onMonthChangeStartWithFirstDate: true,
-//       pickerTheme: DateTimePickerTheme(
-//         showTitle: true,
-//         confirm: Text(_i18n.translate('DONE'),
-//             style: TextStyle(
-//                 fontWeight: FontWeight.bold,
-//                 fontSize: 18.0,
-//                 color: Theme.of(context).primaryColor)),
-//       ),
-//       minDateTime: DateTime(1920, 1, 1),
-//       maxDateTime: DateTime.now(),
-//       initialDateTime: _initialDateTime,
-//       dateFormat: 'yyyy-MMMM-dd', // Date format
-//       locale: _getDatePickerLocale(), // Set your App Locale here
-//       onClose: () => debugPrint("----- onClose -----"),
-//       onCancel: () => debugPrint('onCancel'),
-//       onChange: (dateTime, List<int> index) {
-//         // Get birthday info
-//         _updateUserBithdayInfo(dateTime);
-//         _updateUserSobarInfo(dateTime);
-//       },
-//       onConfirm: (dateTime, List<int> index) {
-//         // Get birthday info
-//         _updateUserBithdayInfo(dateTime);
-//         _updateUserSobarInfo(dateTime);
-//       },
-//     );
-//   }
-
-//   @override
-//   void didChangeDependencies() {
-//     super.didChangeDependencies();
-
-//     /// Initialization
-//     _i18n = AppLocalizations.of(context);
-//     _birthday = _i18n.translate("select_your_birthday");
-//     _sobirity = _i18n.translate("select_your_sobarity");
-//   }
-
-// //sobardate
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       key: _scaffoldKey,
-//       appBar: AppBar(
-//         title: Text(_i18n.translate("sign_up")),
-//         actions: [
-//           // LOGOUT BUTTON
-//           TextButton(
-//             child: Text(_i18n.translate('sign_out'),
-//                 style: TextStyle(color: Theme.of(context).primaryColor)),
-//             onPressed: () {
-//               // Log out button
-//               // UserModel().signOut().then((_) {
-//               //   /// Go to login screen
-//               //   Future(() {
-//               //     Navigator.of(context).popUntil((route) => route.isFirst);
-//               //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-//               //         builder: (context) => const SignInScreen()));
-//               //   });
-//               // });
-//             },
-//           )
-//         ],
-//       ),
-//       body: ScopedModelDescendant(
-//           builder: (context, child, userModel) {
-//         /// Check loading status
-//         // if (userModel.isLoading) return const Processing();
-//         return SingleChildScrollView(
-//           padding: const EdgeInsets.all(15),
-//           child: Column(
-//             children: <Widget>[
-//               Text(_i18n.translate("create_account"),
-//                   style: const TextStyle(
-//                       fontSize: 20, fontWeight: FontWeight.bold)),
-//               const SizedBox(height: 20),
-
-//               /// Profile photo
-//               GestureDetector(
-//                 child: Center(
-//                     child: _imageFile == null
-//                         ? CircleAvatar(
-//                             radius: 60,
-//                             backgroundColor: Theme.of(context).primaryColor,
-//                             child: const SvgIcon("assets/icons/camera_icon.svg",
-//                                 width: 40, height: 40, color: Colors.white),
-//                           )
-//                         : CircleAvatar(
-//                             radius: 60,
-//                             backgroundImage: FileImage(_imageFile!),
-//                           )),
-//                 onTap: () {
-//                   /// Get profile image
-//                   _getImage(context);
-//                 },
-//               ),
-//               const SizedBox(height: 10),
-//               Text(_i18n.translate("profile_photo"),
-//                   textAlign: TextAlign.center),
-
-//               const SizedBox(height: 22),
-
-//               /// Form
-//               Form(
-//                 key: _formKey,
-//                 child: Column(
-//                   children: <Widget>[
-//                     /// FullName field
-//                     TextFormField(
-//                       controller: _nameController,
-//                       decoration: InputDecoration(
-//                           labelText: _i18n.translate("fullname"),
-//                           hintText: _i18n.translate("enter_your_fullname"),
-//                           floatingLabelBehavior: FloatingLabelBehavior.always,
-//                           prefixIcon: const Padding(
-//                             padding: EdgeInsets.all(12.0),
-//                             child: SvgIcon("assets/icons/user_icon.svg"),
-//                           )),
-//                       validator: (name) {
-//                         // Basic validation
-//                         if (name?.isEmpty ?? false) {
-//                           return _i18n.translate("please_enter_your_fullname");
-//                         }
-//                         return null;
-//                       },
-//                     ),
-//                     const SizedBox(height: 20),
-
-//                     /// User gender
-//                     DropdownButtonFormField<String>(
-//                       items: _genders.map((gender) {
-//                         return DropdownMenuItem(
-//                           value: gender,
-//                           child: _i18n.translate("lang") != 'en'
-//                               ? Text(
-//                                   '${gender.toString()} - ${_i18n.translate(gender.toString().toLowerCase())}')
-//                               : Text(gender.toString()),
-//                         );
-//                       }).toList(),
-//                       hint: Text(_i18n.translate("select_gender")),
-//                       onChanged: (gender) {
-//                         setState(() {
-//                           _selectedGender = gender;
-//                         });
-//                       },
-//                       validator: (String? value) {
-//                         if (value == null) {
-//                           return _i18n.translate("please_select_your_gender");
-//                         }
-//                         return null;
-//                       },
-//                     ),
-//                     const SizedBox(height: 20),
-
-//                     /// User sexual identity
-//                     DropdownButtonFormField<String>(
-//                       items: _sexual.map((gender) {
-//                         return DropdownMenuItem(
-//                           value: gender,
-//                           child: _i18n.translate("lang") != 'en'
-//                               ? Text(
-//                                   '${gender.toString()} - ${_i18n.translate(gender.toString().toLowerCase())}')
-//                               : Text(gender.toString()),
-//                         );
-//                       }).toList(),
-//                       hint: Text(_i18n.translate("select_sexual")),
-//                       onChanged: (gender) {
-//                         setState(() {
-//                           _selectedGender = gender;
-//                         });
-//                       },
-//                       validator: (String? value) {
-//                         if (value == null) {
-//                           return _i18n
-//                               .translate("please_select_your_sexual_identity");
-//                         }
-//                         return null;
-//                       },
-//                     ),
-
-//                     const SizedBox(height: 20),
-
-//                     /// Birthday card
-//                     Card(
-//                         clipBehavior: Clip.antiAlias,
-//                         shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(28),
-//                             side: BorderSide(color: Colors.grey[350] as Color)),
-//                         child: ListTile(
-//                           leading:
-//                               const SvgIcon("assets/icons/calendar_icon.svg"),
-//                           title: Text(_birthday!,
-//                               style: const TextStyle(color: Colors.grey)),
-//                           trailing: const Icon(Icons.arrow_drop_down),
-//                           onTap: () {
-//                             /// Select birthday
-//                             _showDatePicker();
-//                           },
-//                         )),
-
-//                     /// Sobar card
-//                     Card(
-//                         clipBehavior: Clip.antiAlias,
-//                         shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(28),
-//                             side: BorderSide(color: Colors.grey[350] as Color)),
-//                         child: ListTile(
-//                           leading:
-//                               const SvgIcon("assets/icons/calendar_icon.svg"),
-//                           title: Text(_sobirity!,
-//                               style: const TextStyle(color: Colors.grey)),
-//                           trailing: const Icon(Icons.arrow_drop_down),
-//                           onTap: () {
-//                             /// Select birthday
-//                             _showDatePicker();
-//                           },
-//                         )),
-//                     const SizedBox(height: 20),
-
-//                     /// School field
-//                     TextFormField(
-//                       controller: _schoolController,
-//                       decoration: InputDecoration(
-//                           labelText: _i18n.translate("school"),
-//                           hintText: _i18n.translate("enter_your_school_name"),
-//                           floatingLabelBehavior: FloatingLabelBehavior.always,
-//                           prefixIcon: const Padding(
-//                             padding: EdgeInsets.all(9.0),
-//                             child: SvgIcon("assets/icons/university_icon.svg"),
-//                           )),
-//                     ),
-//                     const SizedBox(height: 20),
-
-//                     /// Job title field
-//                     TextFormField(
-//                       controller: _jobController,
-//                       decoration: InputDecoration(
-//                           labelText: _i18n.translate("job_title"),
-//                           hintText: _i18n.translate("enter_your_job_title"),
-//                           floatingLabelBehavior: FloatingLabelBehavior.always,
-//                           prefixIcon: const Padding(
-//                             padding: EdgeInsets.all(12.0),
-//                             child: SvgIcon("assets/icons/job_bag_icon.svg"),
-//                           )),
-//                     ),
-//                     const SizedBox(height: 20),
-
-//                     /// Bio field
-//                     TextFormField(
-//                       controller: _bioController,
-//                       maxLines: 4,
-//                       decoration: InputDecoration(
-//                         labelText: _i18n.translate("bio"),
-//                         hintText: _i18n.translate("please_write_your_bio"),
-//                         floatingLabelBehavior: FloatingLabelBehavior.always,
-//                         prefixIcon: const Padding(
-//                           padding: EdgeInsets.all(12.0),
-//                           child: SvgIcon("assets/icons/info_icon.svg"),
-//                         ),
-//                       ),
-//                       validator: (bio) {
-//                         if (bio?.isEmpty ?? false) {
-//                           return _i18n.translate("please_write_your_bio");
-//                         }
-//                         return null;
-//                       },
-//                     ),
-
-//                     /// Agree terms
-//                     const SizedBox(height: 5),
-//                     _agreePrivacy(),
-//                     const SizedBox(height: 20),
-
-//                     /// Sign Up button
-//                     SizedBox(
-//                       width: double.maxFinite,
-//                       child: CustomElevatedButton(
-//                         text: _i18n.translate("CREATE_ACCOUNT"),
-//                         // child: Text(_i18n.translate("CREATE_ACCOUNT"),
-//                         //     style: const TextStyle(fontSize: 18)),
-//                         onPressed: () {
-//                           /// Sign up
-//                           _createAccount();
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       }),
-//     );
-//   }
-
-//   /// Handle Create account
-//   void _createAccount() async {
-//     /// check image file
-//     if (_imageFile == null) {
-//       // Show error message
-//       showScaffoldMessage(
-//           context: context,
-//           message: _i18n.translate("please_select_your_profile_photo"),
-//           bgcolor: Colors.red);
-//       // validate terms
-//     } else if (!_agreeTerms) {
-//       // Show error message
-//       showScaffoldMessage(
-//           context: context,
-//           message: _i18n.translate("you_must_agree_to_our_privacy_policy"),
-//           bgcolor: Colors.red);
-
-//       /// Validate form
-//     } else if (AuthenticationProvider().calculateUserAge(_initialDateTime) <
-//         18) {
-//       // Show error message
-//       showScaffoldMessage(
-//           context: context,
-//           duration: const Duration(seconds: 7),
-//           message: _i18n.translate(
-//               "only_18_years_old_and_above_are_allowed_to_create_an_account"),
-//           bgcolor: Colors.red);
-//     } else if (!_formKey.currentState!.validate()) {
-//     } else {
-//       /// Call all input onSaved method
-//       _formKey.currentState!.save();
-
-//       /// Call sign up method
-//       AuthenticationProvider().signUp(
-//         userPhotoFile: _imageFile!,
-//         userFullName: _nameController.text.trim(),
-//         userGender: _selectedGender!,
-//         userBirthDay: _userBirthDay,
-//         userBirthMonth: _userBirthMonth,
-//         userBirthYear: _userBirthYear,
-//         userSobarDay: _userSobarDay,
-//         userSobarMonth: _userSobarMonth,
-//         userSobarYear: _userSobarYear,
-//         userSchool: _schoolController.text.trim(),
-//         userJobTitle: _jobController.text.trim(),
-//         userBio: _bioController.text.trim(),
-//         onSuccess: () async {
-//           // Show success message
-//           successDialog(context,
-//               message:
-//                   _i18n.translate("your_account_has_been_created_successfully"),
-//               positiveAction: () {
-//             // Execute action
-//             // Go to get the user device's current location
-//             Future(() {
-//               Navigator.of(context).pushAndRemoveUntil(
-//                   MaterialPageRoute(builder: (context) => Home()),
-//                   (route) => false);
-//             });
-//             // End
-//           });
-//         },
-//         onFail: (error) {
-//           // Debug error
-//           debugPrint(error);
-//           // Show error message
-//           errorDialog(
-//             context,
-//             message: _i18n.translate(
-//                     "an_error_occurred_while_creating_your_account") +
-//                 "Error: $error",
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   /// Handle Agree privacy policy
-//   Widget _agreePrivacy() {
-//     return SingleChildScrollView(
-//       scrollDirection: Axis.horizontal,
-//       child: Row(
-//         children: <Widget>[
-//           Checkbox(
-//               activeColor: Theme.of(context).primaryColor,
-//               value: _agreeTerms,
-//               onChanged: (value) {
-//                 _setAgreeTerms(value!);
-//               }),
-//           Row(
-//             children: <Widget>[
-//               GestureDetector(
-//                   onTap: () => _setAgreeTerms(!_agreeTerms),
-//                   child: Text(_i18n.translate("i_agree_with"),
-//                       style: const TextStyle(fontSize: 16))),
-//               // Terms of Service and Privacy Policy
-//               // TermsOfServiceRow(color: Colors.black),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background_image.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/logonew.png',
+                    width: 200.0,
+                    height: 200.0,
+                  ),
+                  // const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient:
+                          LinearGradient(begin: Alignment.bottomRight, colors: [
+                        Theme.of(context).primaryColor,
+                        Colors.black.withOpacity(.4),
+                      ]),
+                      color: Colors.transparent,
+                    ),
+                    child: Form(
+                      key: _fromkey,
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextFormField(
+                            controller: namecontroller,
+                            decoration: InputDecoration(
+                              labelText: 'Username',
+                              labelStyle: const TextStyle(color: Colors.white),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                    color: Color(0xFFAB47BC), width: 2),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                    color: Color(0xFFAB47BC), width: 1.5),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                gapPadding: 0.0,
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                    color: Color(0xFFAB47BC), width: 1.5),
+                              ),
+                              fillColor:
+                                  const Color.fromARGB(101, 158, 158, 158),
+                              filled: true,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            decoration: const BoxDecoration(),
+                            child: TextFormField(
+                              controller: emailcontroller,
+                              decoration: InputDecoration(
+                                labelText: 'Email',
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFFAB47BC), width: 2),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFFAB47BC), width: 1.5),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  gapPadding: 0.0,
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFFAB47BC), width: 1.5),
+                                ),
+                                fillColor:
+                                    const Color.fromARGB(101, 158, 158, 158),
+                                filled: true,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Transform.translate(
+                            offset: Offset(0, 0),
+                            child: Container(
+                              decoration: const BoxDecoration(),
+                              child: TextFormField(
+                                controller: passcontroller,
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  prefixIconColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                        color: Color(0xFFAB47BC), width: 2),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                        color: Color(0xFFAB47BC), width: 2),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    gapPadding: 0.0,
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                        color: Color(0xFFAB47BC), width: 2),
+                                  ),
+                                  fillColor:
+                                      const Color.fromARGB(101, 158, 158, 158),
+                                  filled: true,
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      isPasswordVisible
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        isPasswordVisible = !isPasswordVisible;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                obscureText: !isPasswordVisible,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Theme(
+                                data: Theme.of(context).copyWith(
+                                  unselectedWidgetColor: Colors
+                                      .pinkAccent, // Customize checkbox color when unchecked
+                                  checkboxTheme: CheckboxThemeData(
+                                    checkColor: MaterialStateProperty
+                                        .resolveWith<Color>(
+                                      (Set<MaterialState> states) {
+                                        if (states
+                                            .contains(MaterialState.selected)) {
+                                          return Colors
+                                              .white; // Customize checkbox color when checked
+                                        } else
+                                          return Colors.white; // Default color
+                                      },
+                                    ),
+                                    fillColor: MaterialStateProperty
+                                        .resolveWith<Color>(
+                                      (Set<MaterialState> states) {
+                                        if (states
+                                            .contains(MaterialState.selected)) {
+                                          return Color.fromARGB(255, 201, 36,
+                                              235); // Customize checkbox fill color when checked
+                                        }
+                                        return Colors.white; // Default color
+                                      },
+                                    ),
+                                    overlayColor: MaterialStateProperty
+                                        .all<Color>(Colors.white.withOpacity(
+                                            0.1)), // Customize checkbox overlay color when pressed
+                                  ),
+                                ),
+                                child: Checkbox(
+                                  value: isChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Handle Privacy Policy link tap
+                                },
+                                child: const Text(
+                                  'I agree to the ',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Handle Privacy Policy link tap
+                                },
+                                child: const Text(
+                                  'Privacy Policy',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                              const Text(
+                                ' and ',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  color: Colors.white,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Handle Terms of Use link tap
+                                },
+                                child: const Text(
+                                  'Terms of Use',
+                                  style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Column(
+                              children: [
+                                CustomElevatedButton(
+                                    text: 'Register',
+                                    onPressed: () {
+                                      authProvider.signUpWithEmailAndPassword(
+                                          emailcontroller.text,
+                                          passcontroller.text,
+                                          namecontroller.text,
+                                          context);
+                                    })
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: heightPercentageToDP(2, context)),
+                            child: SizedBox(
+                              child: GestureDetector(
+                                onTap: () {
+                                  // Navigate to the signup screen
+                                  Navigator.pushNamed(
+                                      context, RoutesName.LoginWithEmail);
+                                },
+                                child: RichText(
+                                  text: const TextSpan(
+                                    text: 'Already  have an account?',
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                    children: [
+                                      TextSpan(
+                                        text: ' Login',
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
