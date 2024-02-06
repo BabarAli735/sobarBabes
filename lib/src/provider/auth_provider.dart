@@ -76,6 +76,7 @@ class AuthenticationProvider with ChangeNotifier {
           setLoading(false);
         },
         codeSent: (String verificationId, int? resendToken) {
+           setLoading(false);
           var data = {'phoneNumber': number, 'id': verificationId};
           Navigator.pushNamed(
             context,
@@ -89,6 +90,7 @@ class AuthenticationProvider with ChangeNotifier {
       );
     } catch (e) {
       Utils.toastMessage(e.toString());
+      setLoading(false);
       return null;
     }
     return null;

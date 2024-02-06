@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
       status: 'single',
       age: 20,
       imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ5GVMa7gqvAj8yMNjWD7DueJPzlHuPelpjA&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI8I6knQGCgyq5wSzFmu4CjF_4aSupBTdxAw&usqp=CAU',
     ),
     Person(
       name: 'Kajal',
@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
       status: 'In Relation',
       age: 25,
       imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLtNoMsnotZFfFU8ha3Yj3_bJjuXVuSsDsZA&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvVXOWbLstMwq82U9SOnItAzvMmyyX-faBYw&usqp=CAU',
     ),
     Person(
       name: 'Jenny',
