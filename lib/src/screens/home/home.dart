@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/widgets/index.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 class HomeScreen extends StatelessWidget {
   final List<Person> people = [
     Person(
@@ -38,6 +40,22 @@ class HomeScreen extends StatelessWidget {
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9OWToPqKj8ja3hlU1mKWq7ZsbslwqHE-gvg&usqp=CAU',
     ),
   ];
+ 
+   final Set<Marker> _markers = {
+    const Marker(
+      markerId: MarkerId('marker1'),
+      position: LatLng(37.42796133580664, -122.085749655962),
+      infoWindow: InfoWindow(
+        title: 'Your Marker Title',
+        snippet: 'Your Marker Snippet',
+      ),
+    ),
+  };
+  final Completer<GoogleMapController> _controller = Completer();
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,82 +67,103 @@ class HomeScreen extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
         ),
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              colors: [
-                Theme.of(context).primaryColor,
-                Colors.black.withOpacity(.4)
-              ],
+        // Container(
+        //   height: MediaQuery.of(context).size.height,
+        //   width: MediaQuery.of(context).size.width,
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.bottomCenter,
+        //       colors: [
+        //         Theme.of(context).primaryColor,
+        //         Colors.black.withOpacity(.4)
+        //       ],
+        //     ),
+        //   ),
+        //   child: ListView.builder(
+        //     scrollDirection: Axis.horizontal,
+        //     itemCount: people.length,
+        //     itemBuilder: (context, index) {
+        //       return Container(
+        //         width: widthPercentageToDP(93, context),
+        //         margin: EdgeInsets.symmetric(
+        //             horizontal: widthPercentageToDP(3, context)),
+        //         decoration: BoxDecoration(
+
+        //             // borderRadius: BorderRadius.circular(10),
+        //             // border: Border.all(color: Colors.grey),
+        //             ),
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.center,
+        //           children: [
+        //             Image.network(
+        //               people[index].imageUrl,
+        //               height: heightPercentageToDP(50, context),
+        //               fit: BoxFit.cover,
+        //             ),
+        //             // Padding(
+        //             //   padding: const EdgeInsets.all(8.0),
+        //             //   child: Text(
+        //             //     people[index].name,
+        //             //     textAlign: TextAlign.center,
+        //             //     style: TextStyle(
+        //             //         fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.white),
+        //             //   ),
+        //             // ),
+        //             Column(
+        //               children: [
+        //                 Row(
+        //                   children: [
+        //                     MediumText(text: 'Name : '),
+        //                     BoldText(text: people[index].name),
+        //                   ],
+        //                 ),
+        //                 Row(
+        //                   children: [
+        //                     MediumText(text: 'Age : '),
+        //                     BoldText(text: people[index].age.toString()),
+        //                   ],
+        //                 ),
+        //                 Row(
+        //                   children: [
+        //                     MediumText(text: 'Job : '),
+        //                     BoldText(text: people[index].job.toString()),
+        //                   ],
+        //                 ),
+        //                 Row(
+        //                   children: [
+        //                     MediumText(text: 'Status : '),
+        //                     BoldText(text: people[index].status.toString()),
+        //                   ],
+        //                 ),
+        //               ],
+        //             )
+        //           ],
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // )
+      Container(
+      margin: EdgeInsets.only(top: heightPercentageToDP(2, context)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BoldText(text: 'Site Details'),
+          Container(
+            margin: EdgeInsets.only(top: heightPercentageToDP(2, context)),
+            height: heightPercentageToDP(30, context),
+            child: GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: _kGooglePlex,
+              onMapCreated: (GoogleMapController mapController) {
+                _controller.complete(mapController);
+              },
+              markers: _markers,
             ),
           ),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: people.length,
-            itemBuilder: (context, index) {
-              return Container(
-                width: widthPercentageToDP(93, context),
-                margin: EdgeInsets.symmetric(
-                    horizontal: widthPercentageToDP(3, context)),
-                decoration: BoxDecoration(
-
-                    // borderRadius: BorderRadius.circular(10),
-                    // border: Border.all(color: Colors.grey),
-                    ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.network(
-                      people[index].imageUrl,
-                      height: heightPercentageToDP(50, context),
-                      fit: BoxFit.cover,
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: Text(
-                    //     people[index].name,
-                    //     textAlign: TextAlign.center,
-                    //     style: TextStyle(
-                    //         fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.white),
-                    //   ),
-                    // ),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            MediumText(text: 'Name : '),
-                            BoldText(text: people[index].name),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            MediumText(text: 'Age : '),
-                            BoldText(text: people[index].age.toString()),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            MediumText(text: 'Job : '),
-                            BoldText(text: people[index].job.toString()),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            MediumText(text: 'Status : '),
-                            BoldText(text: people[index].status.toString()),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-        )
+        ],
+      ),
+    )
       ],
     ));
   }
