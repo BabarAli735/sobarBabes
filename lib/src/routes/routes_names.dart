@@ -12,4 +12,5 @@ class RoutesName {
   static const String Home = 'Home_screen';
   static const String EditProfileScreen = 'EditProfileScreen_screen';
   static const String LoginWithEmail = 'LoginWithEmail_screen';
+  static const String UserDetail   = 'UserDetail  _screen';
 }

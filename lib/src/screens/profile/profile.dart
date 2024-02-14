@@ -119,12 +119,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Center(
                           child: Stack(
                             children: <Widget>[
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    userProfileData!.userPhotoLink),
-                                radius: widthPercentageToDP(18, context),
-                                backgroundColor: Theme.of(context).primaryColor,
-                              ),
+                                CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      userProfileData!.userPhotoLink),
+                                  radius: widthPercentageToDP(18, context),
+                                  backgroundColor: Theme.of(context).primaryColor,
+                                ),
 
                               /// Edit icon
                               Positioned(

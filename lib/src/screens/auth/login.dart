@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
                           child: MediumText(text: 'Forget Password')),
                     ),
                     const VerticalSpace(),
-                    CustomElevatedButton(text: 'Login', onPressed: () {}),
+                    CustomElevatedButton(text: 'Login', onPressed: () {},),
                     const VerticalSpace(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -253,6 +253,7 @@ class AuthenticationProvider with ChangeNotifier {
   }
 
   Future<void> signInWithEmailAndPassword(email, password, context) async {
+    setLoading(true);
     try {
       
       UserCredential userCredential =
@@ -266,7 +267,10 @@ class AuthenticationProvider with ChangeNotifier {
       await AccessTokenManager.savePhoneNumber(
           userCredential.user!.email.toString());
       Navigator.pushNamed(context, RoutesName.Home);
+      setLoading(false);
     } on FirebaseAuthException catch (e) {
+      setLoading(false);
+
      
       print(e);
       Utils.flushBarErrorMessage(e.toString(), context);

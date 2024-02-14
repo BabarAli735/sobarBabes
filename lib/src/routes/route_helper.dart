@@ -11,6 +11,7 @@ import 'package:sobarbabe/src/screens/auth/welcome.dart';
 import 'package:sobarbabe/src/screens/home/BottomTab.dart';
 import 'package:sobarbabe/src/screens/home/home.dart';
 import 'package:sobarbabe/src/screens/profile/edit_profile.dart';
+import 'package:sobarbabe/src/screens/profile/user_detail.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -51,6 +52,10 @@ class Routes {
       case RoutesName.signUp:
         return MaterialPageRoute(
             builder: (BuildContext context) =>  Signup(),
+            settings: settings);
+      case RoutesName.UserDetail:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  UserDetail(),
             settings: settings);
   
       default:

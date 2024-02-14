@@ -15,7 +15,7 @@ class CustomElevatedButton extends StatelessWidget {
   final double? width;
   final bool? isLoading;
 
-  CustomElevatedButton(
+    CustomElevatedButton(
       {required this.text,
       required this.onPressed,
       this.buttonColor = AppColors.secondary,
