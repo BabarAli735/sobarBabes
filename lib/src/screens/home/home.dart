@@ -1,185 +1,109 @@
 import 'dart:async';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:sobarbabe/src/constants/them.dart';
-import 'package:sobarbabe/src/helpers/responsive_functions.dart';
-import 'package:sobarbabe/src/widgets/index.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-class HomeScreen extends StatelessWidget {
-  final List<Person> people = [
-    Person(
-      name: 'Jeniffer',
-      job: 'Graphics Desighner',
-      status: 'single',
-      age: 20,
-      imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI8I6knQGCgyq5wSzFmu4CjF_4aSupBTdxAw&usqp=CAU',
-    ),
-    Person(
-      name: 'Kajal',
-       job: 'Mobile App Developer',
-      status: 'In Relation',
-      age: 25,
-      imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvVXOWbLstMwq82U9SOnItAzvMmyyX-faBYw&usqp=CAU',
-    ),
-    Person(
-      name: 'Jenny',
-       job: 'Shop Keeper',
-      status: 'widow',
-      age: 22,
-      imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuf9yS8GrmOC1gF6gzx9BwbsDjJ8DB4t35WQ&usqp=CAU',
-    ),
-    Person(
-      name: 'Emma',
-       job: 'Jobless',
-      status: 'single',
-      age: 21,
-      imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9OWToPqKj8ja3hlU1mKWq7ZsbslwqHE-gvg&usqp=CAU',
-    ),
+import 'dart:ui' as ui;
+
+class HomeScreen extends StatefulWidget {
+  static const LatLng _center = const LatLng(45.521563, -122.677433);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Completer<GoogleMapController> _controller = Completer();
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
+  // Define your markers
+  final List<Marker> _markers = <Marker>[];
+  List<LatLng> _lating = [
+    LatLng(45.521563, -122.677433),
+    LatLng(45.531563, -122.667433),
+    LatLng(45.531563, -122.667433)
   ];
+  List<Map<String, dynamic>> data = [
+    {
+      'id': '1',
+      'position': const LatLng(45.521563, -122.677433),
+      'assetPath': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D'
+    },
+    {
+      'id': '2',
+      'position': const LatLng(45.531563, -122.667433),
+      'assetPath': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D'
+    },
+    {
+      'id': '3',
+      'position': const LatLng(45.531563, -122.667433),
+      'assetPath': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D'
+    },
+  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    loadData();
+    super.initState();
+  }
+
  
-   final Set<Marker> _markers = {
-    const Marker(
-      markerId: MarkerId('marker1'),
-      position: LatLng(37.42796133580664, -122.085749655962),
-      infoWindow: InfoWindow(
-        title: 'Your Marker Title',
-        snippet: 'Your Marker Snippet',
-      ),
-    ),
-  };
-  final Completer<GoogleMapController> _controller = Completer();
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+
+  loadData() async {
+    for (var i = 0; i < _lating.length; i++) {
+      Uint8List? image = await loadNetworkImage(data[i]['assetPath']);
+      final ui.Codec markerImageCodec = await ui.instantiateImageCodec(
+          image.buffer.asUint8List(),
+          targetWidth: 200,
+          targetHeight: 200,
+
+          );
+      final ui.FrameInfo frameInfo = await markerImageCodec.getNextFrame();
+      final ByteData? byteData =
+          await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+          final Uint8List? rezizesImageMarker=await byteData?.buffer.asUint8List();
+      _markers.add(
+        Marker(
+            markerId: MarkerId(i.toString()),
+            position: _lating[i],
+            infoWindow: InfoWindow(title: 'Title of marker' + i.toString()),
+            icon: BitmapDescriptor.fromBytes(rezizesImageMarker!)
+            ),
+    
+      );
+      setState(() {});
+    }
+  }
+
+  Future<Uint8List> loadNetworkImage(String path) async {
+    final completer = Completer<ImageInfo>();
+    var image = NetworkImage(path);
+    image.resolve(ImageConfiguration()).addListener(
+        ImageStreamListener((info, _) => completer.complete(info)));
+    final imageInfo = await completer.future;
+    final byteData =
+        await imageInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    return byteData!.buffer.asUint8List();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Image.asset(
-          AppImages.background_image,
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
-        // Container(
-        //   height: MediaQuery.of(context).size.height,
-        //   width: MediaQuery.of(context).size.width,
-        //   decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //       begin: Alignment.bottomCenter,
-        //       colors: [
-        //         Theme.of(context).primaryColor,
-        //         Colors.black.withOpacity(.4)
-        //       ],
-        //     ),
-        //   ),
-        //   child: ListView.builder(
-        //     scrollDirection: Axis.horizontal,
-        //     itemCount: people.length,
-        //     itemBuilder: (context, index) {
-        //       return Container(
-        //         width: widthPercentageToDP(93, context),
-        //         margin: EdgeInsets.symmetric(
-        //             horizontal: widthPercentageToDP(3, context)),
-        //         decoration: BoxDecoration(
-
-        //             // borderRadius: BorderRadius.circular(10),
-        //             // border: Border.all(color: Colors.grey),
-        //             ),
-        //         child: Column(
-        //           crossAxisAlignment: CrossAxisAlignment.center,
-        //           children: [
-        //             Image.network(
-        //               people[index].imageUrl,
-        //               height: heightPercentageToDP(50, context),
-        //               fit: BoxFit.cover,
-        //             ),
-        //             // Padding(
-        //             //   padding: const EdgeInsets.all(8.0),
-        //             //   child: Text(
-        //             //     people[index].name,
-        //             //     textAlign: TextAlign.center,
-        //             //     style: TextStyle(
-        //             //         fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.white),
-        //             //   ),
-        //             // ),
-        //             Column(
-        //               children: [
-        //                 Row(
-        //                   children: [
-        //                     MediumText(text: 'Name : '),
-        //                     BoldText(text: people[index].name),
-        //                   ],
-        //                 ),
-        //                 Row(
-        //                   children: [
-        //                     MediumText(text: 'Age : '),
-        //                     BoldText(text: people[index].age.toString()),
-        //                   ],
-        //                 ),
-        //                 Row(
-        //                   children: [
-        //                     MediumText(text: 'Job : '),
-        //                     BoldText(text: people[index].job.toString()),
-        //                   ],
-        //                 ),
-        //                 Row(
-        //                   children: [
-        //                     MediumText(text: 'Status : '),
-        //                     BoldText(text: people[index].status.toString()),
-        //                   ],
-        //                 ),
-        //               ],
-        //             )
-        //           ],
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // )
-      Container(
-      margin: EdgeInsets.only(top: heightPercentageToDP(2, context)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BoldText(text: 'Site Details'),
-          Container(
-            margin: EdgeInsets.only(top: heightPercentageToDP(2, context)),
-            height: heightPercentageToDP(30, context),
-            child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController mapController) {
-                _controller.complete(mapController);
-              },
-              markers: _markers,
-            ),
-          ),
-        ],
+      appBar: AppBar(
+        title: Text('Maps Sample App'),
+        backgroundColor: Colors.green[700],
       ),
-    )
-      ],
-    ));
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        markers: Set<Marker>.of(_markers),
+        initialCameraPosition: const CameraPosition(
+          target: HomeScreen._center,
+          zoom: 11.0,
+        ),
+      ),
+    );
   }
-}
-
-class Person {
-  final String name;
-  final int age;
-  final String imageUrl;
-  final String job;
-  final String status;
-
-  Person(
-      {required this.name,
-      required this.imageUrl,
-      required this.age,
-      required this.job,
-      required this.status});
 }

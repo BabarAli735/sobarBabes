@@ -323,7 +323,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 userPhotoLink: image.toString(),
                                 userJobTitle: _jobController.text,
                                 userStatus: _schoolController.text);
-                            authProvider.createUser(userModel);
+                                print(userModel.toString());
+                                try {
+                                   authProvider.createUser(userModel);
                             authProvider.setLoading(false);
                             await AccessTokenManager.saveAccessToken(
                                 userModel.toString());
@@ -332,6 +334,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             // ignore: use_build_context_synchronously
                             Navigator.pushNamedAndRemoveUntil(
                                 context, RoutesName.Home, (route) => false);
+                                } catch (e) {
+                                  print('error====='+e.toString());
+                                }
+                           
                           })
                     ],
                   ),
