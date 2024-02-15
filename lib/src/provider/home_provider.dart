@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fire_auth;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:sobarbabe/src/models/nearby_models.dart';
+import 'package:sobarbabe/src/utills/utills.dart';
 
 class HomeProvider with ChangeNotifier {
   
@@ -42,5 +43,25 @@ class HomeProvider with ChangeNotifier {
      final userData = snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).toList();
    print(userData);
     return userData;
+  }
+
+    Future<NearByModel> getUserDetail(String userId) async {
+    final snapshot = await _db
+        .collection('NearBy')
+        .where('userId', isEqualTo: userId)
+        .get();
+    final userData = snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).single;
+    return userData;
+  }
+   Future<void> addToFavorite(NearByModel userModel) async {
+    _db
+        .collection('favorite')
+        .add(userModel.toJson())
+        .whenComplete(() => () {
+              Utils.toastMessage('Added to your favorite');
+            })
+        .catchError((error, stackTrace) {
+      Utils.toastMessage('Something went wrong try again');
+    });
   }
 }

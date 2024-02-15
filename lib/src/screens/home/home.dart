@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:sobarbabe/src/provider/home_provider.dart';
 import 'dart:ui' as ui;
 
+import 'package:sobarbabe/src/routes/routes_names.dart';
+
 
 class HomeScreen extends StatefulWidget {
   static const LatLng _center = const LatLng(45.521563, -122.677433);
@@ -62,6 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
           position: LatLng(data['lat'], data['lng']),
           infoWindow: InfoWindow(title: data['Name']),
           icon: BitmapDescriptor.fromBytes(rezizesImageMarker!),
+          onTap: () => {
+            Navigator.pushNamed(context, RoutesName.UserDetail,arguments: data['userId'])
+          },
         );
 
         _markers.add(marker);
