@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/provider/auth_provider.dart';
+import 'package:sobarbabe/src/provider/home_provider.dart';
 import 'package:sobarbabe/src/routes/route_helper.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'dart:io' show Platform;
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: SafeArea(
         child: MaterialApp(

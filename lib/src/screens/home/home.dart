@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:sobarbabe/src/provider/home_provider.dart';
 import 'dart:ui' as ui;
 
-import 'package:sobarbabe/src/routes/routes_names.dart';
 
 class HomeScreen extends StatefulWidget {
   static const LatLng _center = const LatLng(45.521563, -122.677433);
@@ -16,71 +18,68 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Completer<GoogleMapController> _controller = Completer();
-
+  late HomeProvider homeProvider;
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
 
   // Define your markers
   final List<Marker> _markers = <Marker>[];
-  List<LatLng> _lating = [
-    LatLng(45.521563, -122.677433),
-    LatLng(45.531563, -122.667433),
-    LatLng(45.531563, -122.667433)
-  ];
-  List<Map<String, dynamic>> data = [
-    {
-      'id': '1',
-      'position': const LatLng(45.521563, -122.677433),
-      'assetPath':
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D'
-    },
-    {
-      'id': '2',
-      'position': const LatLng(45.531563, -122.667433),
-      'assetPath':
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D'
-    },
-    {
-      'id': '3',
-      'position': const LatLng(45.531563, -122.667433),
-      'assetPath':
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D'
-    },
-  ];
+
   @override
   void initState() {
     // TODO: implement initState
-    loadData();
     super.initState();
+    loadData();
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
   }
 
   loadData() async {
-    for (var i = 0; i < _lating.length; i++) {
-      Uint8List? image = await loadNetworkImage(data[i]['assetPath']);
-      final ui.Codec markerImageCodec = await ui.instantiateImageCodec(
-        image.buffer.asUint8List(),
-        targetWidth: 200,
-        targetHeight: 200,
-      );
-      final ui.FrameInfo frameInfo = await markerImageCodec.getNextFrame();
-      final ByteData? byteData =
-          await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
-      final Uint8List? rezizesImageMarker =
-          await byteData?.buffer.asUint8List();
-      _markers.add(
-        Marker(
-            markerId: MarkerId(i.toString()),
-            position: _lating[i],
-            infoWindow: InfoWindow(title: 'Title of marker' + i.toString()),
-            icon: BitmapDescriptor.fromBytes(rezizesImageMarker!),
-            onTap: () {
-              Navigator.pushNamed(context, RoutesName.UserDetail,
-                  arguments: data[i]['id']);
-            }),
-      );
-      setState(() {});
-    }
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('NearBy').get();
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    List<Marker> markers = [];
+    allData.forEach((doc) async {
+      final Map<String, dynamic>? data = doc as Map<String, dynamic>?;
+
+      // Explicitly specify the type of doc
+
+      if (data != null) {
+        Uint8List? image = await loadNetworkImage(data['image']);
+        final ui.Codec markerImageCodec = await ui.instantiateImageCodec(
+          image.buffer.asUint8List(),
+          targetWidth: 200,
+          targetHeight: 200,
+        );
+        final ui.FrameInfo frameInfo = await markerImageCodec.getNextFrame();
+        final ByteData? byteData =
+            await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+        final Uint8List? rezizesImageMarker =
+            await byteData?.buffer.asUint8List();
+
+        Marker marker = Marker(
+          markerId: MarkerId(data['Name']),
+          position: LatLng(data['lat'], data['lng']),
+          infoWindow: InfoWindow(title: data['Name']),
+          icon: BitmapDescriptor.fromBytes(rezizesImageMarker!),
+        );
+
+        _markers.add(marker);
+        setState(() {});
+      }
+    });
+
+    // allData.forEach((doc) {
+    //   print(doc['Name']);
+
+    //   // Marker marker = Marker(
+    //   //   markerId: MarkerId(title),
+    //   //   position: LatLng(lat, lng),
+    //   //   infoWindow: InfoWindow(title: title),
+    //   // );
+
+    //   // markers.add(marker);
+    // });
   }
 
   Future<Uint8List> loadNetworkImage(String path) async {

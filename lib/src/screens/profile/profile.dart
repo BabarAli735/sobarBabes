@@ -66,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     } catch (error) {
       // Handle any errors that may occur during data loading
-      print("Error loading user profile data: $error");
+      // print("Error loading user profile data: $error");
     }
   }
 

@@ -38,7 +38,7 @@ class _BottomTabState extends State<BottomTab> with SingleTickerProviderStateMix
    Future<void> _loadUserProfileData(authenticationProvider) async {
     try {
       var token = await AccessTokenManager.getNumber();
-      print('token====' + token.toString());
+      // print('token====' + token.toString());
       UserModel userModel = await authenticationProvider.getUserDetail(token!);
       print('userModel===' + userModel.username);
       // Map<String, dynamic> userData = await fetchUserProfileData();
@@ -48,7 +48,7 @@ class _BottomTabState extends State<BottomTab> with SingleTickerProviderStateMix
       });
     } catch (error) {
       // Handle any errors that may occur during data loading
-      print("Error loading user profile data: $error");
+      // print("Error loading user profile data: $error");
     }
   }
   @override
