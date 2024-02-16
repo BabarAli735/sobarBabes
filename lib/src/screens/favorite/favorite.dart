@@ -109,9 +109,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           color: AppColors.black),
                       child: InkWell(
                         onTap: () {
-                          // Navigator.pushNamed(context, RoutesName.UserDetail,
-                          //     arguments: data['userId']);
-                          print(data);
+                          Navigator.pushNamed(context, RoutesName.UserDetail,
+                              arguments: data['userId']);
+                      
                         },
                         child: Column(
                           children: [
@@ -127,14 +127,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                               children: [
                                 Text(
                                   data['Name'],
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.white),
                                 ),
                                 Text(
                                   people[index].age.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.white),
