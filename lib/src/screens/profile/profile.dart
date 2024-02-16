@@ -12,6 +12,7 @@ import 'package:sobarbabe/src/routes/routes_names.dart';
 import 'package:sobarbabe/src/utills/utills.dart';
 import 'package:sobarbabe/src/widgets/image_source_sheet.dart';
 import 'package:sobarbabe/src/widgets/index.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fire_auth;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _jobController = TextEditingController();
   final _bioController = TextEditingController();
   final _username = TextEditingController();
-
+  final _firebaseAuth = fire_auth.FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -119,12 +120,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Center(
                           child: Stack(
                             children: <Widget>[
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      userProfileData!.userPhotoLink),
-                                  radius: widthPercentageToDP(18, context),
-                                  backgroundColor: Theme.of(context).primaryColor,
-                                ),
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    userProfileData!.userPhotoLink),
+                                radius: widthPercentageToDP(18, context),
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
 
                               /// Edit icon
                               Positioned(
@@ -333,6 +334,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             // ignore: use_build_context_synchronously
                             Navigator.pushNamedAndRemoveUntil(
                                 context, RoutesName.Home, (route) => false);
+                          }),
+                      const SizedBox(height: 20),
+                      CustomElevatedButton(
+                          text: 'Logout',
+                          onPressed: () async {
+                            await AccessTokenManager.removeAccessToken();
+                            Navigator.pushNamed(context, RoutesName.Welcome);
                           })
                     ],
                   ),

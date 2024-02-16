@@ -31,7 +31,7 @@ class NearByModel {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     final data = documentSnapshot.data();
     return NearByModel(
-      userId: documentSnapshot.id,
+      userId: data!['userId'],
       Name: data!['Name'],
       relation: data['relation'],
       about: data['about'],

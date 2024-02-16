@@ -10,7 +10,6 @@ import 'package:sobarbabe/src/models/nearby_models.dart';
 import 'package:sobarbabe/src/utills/utills.dart';
 
 class HomeProvider with ChangeNotifier {
-  
   bool _isloading = false;
   String _verificationId = '';
   String _phoneNumber = '';
@@ -39,30 +38,33 @@ class HomeProvider with ChangeNotifier {
   }
 
   Future<List<NearByModel>> getNearByUsers() async {
-    final snapshot= await _db.collection('NearBy').get();
-     final userData = snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).toList();
-   print(userData);
-    return userData;
-  }
-  Future<List<NearByModel>> getFavoriteData() async {
-    final snapshot= await _db.collection('favorite').get();
-     final userData = snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).toList();
-   print(userData);
+    final snapshot = await _db.collection('NearBy').get();
+    final userData =
+        snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).toList();
+    print(userData);
     return userData;
   }
 
-    Future<NearByModel> getUserDetail(String userId) async {
-    final snapshot = await _db
-        .collection('NearBy')
-        .where('userId', isEqualTo: userId)
-        .get();
-    final userData = snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).single;
+  Future<List<NearByModel>> getFavoriteData() async {
+    final snapshot = await _db.collection('favorite').get();
+    final userData =
+        snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).toList();
+    print(userData);
     return userData;
   }
-   Future<void> addToFavorite(NearByModel userModel) async {
+
+  Future<NearByModel> getUserDetail(String userId) async {
+    final snapshot =
+        await _db.collection('NearBy').where('userId', isEqualTo: userId).get();
+    final userData =
+        snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).single;
+    return userData;
+  }
+
+  Future<void> addToFavorite( userModel) async {
     _db
         .collection('favorite')
-        .add(userModel.toJson())
+        .add(userModel)
         .whenComplete(() => () {
               Utils.toastMessage('Added to your favorite');
             })

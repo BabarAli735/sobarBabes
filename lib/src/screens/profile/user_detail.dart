@@ -35,13 +35,12 @@ class _UserDetailState extends State<UserDetail> {
   Future<void> _getUserData(String data) async {
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     nearByModel = await homeProvider.getUserDetail(data);
-    print(nearByModel);
+
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary, // Make the app bar transparent
@@ -145,13 +144,15 @@ class _UserDetailState extends State<UserDetail> {
                         setState(() {});
                         var token = await AccessTokenManager.getNumber();
                         if (isFav) {
-                          var data = NearByModel(
-                              userId: token!,
-                              Name: nearByModel!.Name,
-                              about: nearByModel!.about,
-                              relation: nearByModel!.relation,
-                              age: nearByModel!.age,
-                              image: nearByModel!.image);
+                          var data = {
+                            "userId": nearByModel!.userId,
+                            "Name": nearByModel!.Name,
+                            'about': nearByModel!.about,
+                            'relation': nearByModel!.relation,
+                            'age': nearByModel!.age,
+                            "image": nearByModel!.image,
+                            "user": token
+                          };
 
                           homeProvider.addToFavorite(data);
                         }
