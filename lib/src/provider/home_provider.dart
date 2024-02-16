@@ -44,6 +44,12 @@ class HomeProvider with ChangeNotifier {
    print(userData);
     return userData;
   }
+  Future<List<NearByModel>> getFavoriteData() async {
+    final snapshot= await _db.collection('favorite').get();
+     final userData = snapshot.docs.map((e) => NearByModel.fromSnapShot(e)).toList();
+   print(userData);
+    return userData;
+  }
 
     Future<NearByModel> getUserDetail(String userId) async {
     final snapshot = await _db

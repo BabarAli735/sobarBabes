@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sobarbabe/src/constants/them.dart';
+import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/provider/home_provider.dart';
 import 'dart:ui' as ui;
 
@@ -73,18 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {});
       }
     });
-
-    // allData.forEach((doc) {
-    //   print(doc['Name']);
-
-    //   // Marker marker = Marker(
-    //   //   markerId: MarkerId(title),
-    //   //   position: LatLng(lat, lng),
-    //   //   infoWindow: InfoWindow(title: title),
-    //   // );
-
-    //   // markers.add(marker);
-    // });
   }
 
   Future<Uint8List> loadNetworkImage(String path) async {
@@ -102,8 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Maps Sample App'),
-        backgroundColor: Colors.green[700],
+        title: Text('Match people around you',),
+        backgroundColor: AppColors.black,
+        titleTextStyle: TextStyle(color: AppColors.white,fontSize: responsivefonts(2.4, context)),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,

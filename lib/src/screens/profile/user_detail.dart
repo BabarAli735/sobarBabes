@@ -28,17 +28,20 @@ class _UserDetailState extends State<UserDetail> {
     super.didChangeDependencies();
     // Access the arguments data here
     data = (ModalRoute.of(context)!.settings.arguments as String?)!;
+    print(data);
     _getUserData(data);
   }
 
   Future<void> _getUserData(String data) async {
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     nearByModel = await homeProvider.getUserDetail(data);
+    print(nearByModel);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary, // Make the app bar transparent
@@ -141,14 +144,17 @@ class _UserDetailState extends State<UserDetail> {
                         isFav = !isFav;
                         setState(() {});
                         var token = await AccessTokenManager.getNumber();
-                        var data = NearByModel(
-                            userId: token!,
-                            Name: nearByModel!.Name,
-                            about: nearByModel!.about,
-                            relation: nearByModel!.relation,
-                            age: nearByModel!.age,
-                            image: nearByModel!.image);
-                        homeProvider.addToFavorite(data);
+                        if (isFav) {
+                          var data = NearByModel(
+                              userId: token!,
+                              Name: nearByModel!.Name,
+                              about: nearByModel!.about,
+                              relation: nearByModel!.relation,
+                              age: nearByModel!.age,
+                              image: nearByModel!.image);
+
+                          homeProvider.addToFavorite(data);
+                        }
                       },
                       child: Icon(
                         Icons.favorite,
