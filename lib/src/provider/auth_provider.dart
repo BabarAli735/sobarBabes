@@ -285,7 +285,7 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _signOut() async {
+  Future<void> signOut() async {
     try {
       await _firebaseAuth.signOut();
       print('User signed out');

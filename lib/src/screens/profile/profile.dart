@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late UserModel userProfileData;
+  late UserModel? userProfileData;
   late AuthenticationProvider authenticationProvider;
   // Variables
   final _formKey = GlobalKey<FormState>();
@@ -54,18 +54,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // For example: yourProvider.someMethod();
   }
 
-  Future<void> _loadUserProfileData(authenticationProvider) async {
+  Future<void> _loadUserProfileData(
+      AuthenticationProvider authenticationProvider) async {
     try {
       var token = await AccessTokenManager.getNumber();
-      // print('token====' + token.toString());
+      print('token====' + token.toString());
       UserModel userModel = await authenticationProvider.getUserDetail(token!);
-      // print('userModel===' + userModel.username);
+      print('userModel===' + userModel.username);
       // Map<String, dynamic> userData = await fetchUserProfileData();
 
       setState(() {
         userProfileData = userModel;
       });
     } catch (error) {
+      print('error===' + error.toString());
       // Handle any errors that may occur during data loading
       // print("Error loading user profile data: $error");
     }
@@ -73,6 +75,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('userProfileData' + userProfileData!.username);
+
     /// Initialization
     var authProvider = Provider.of<AuthenticationProvider>(context);
     File file = authProvider.profileImage ?? File('default/path/to/image.jpg');
@@ -198,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _schoolController,
                         decoration: InputDecoration(
                             labelText: "Status",
-                            hintText: userProfileData.userStatus,
+                            hintText: userProfileData!.userStatus,
                             hintStyle: TextStyle(color: AppColors.white),
                             labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -341,6 +345,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () async {
                             await AccessTokenManager.removeAccessToken();
                             Navigator.pushNamed(context, RoutesName.Welcome);
+                            authenticationProvider.signOut();
                           })
                     ],
                   ),
