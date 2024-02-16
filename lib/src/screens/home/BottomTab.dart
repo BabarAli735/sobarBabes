@@ -108,8 +108,8 @@ class _BottomTabState extends State<BottomTab> with SingleTickerProviderStateMix
             label: 'Favorite',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: AppColors.white),
-            label: 'Search',
+            icon: Icon(Icons.chat, color: AppColors.white),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle, color: AppColors.white),

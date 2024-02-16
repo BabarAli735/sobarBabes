@@ -92,7 +92,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             );
           } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
             return Center(
-              child: Text('No data available'),
+              child: BoldText(text: 'No Record found',color: AppColors.black,),
             );
           } else {
             return ListView.builder(
