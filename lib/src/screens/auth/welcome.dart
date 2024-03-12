@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sobarbabe/src/constants/them.dart';
 import 'package:sobarbabe/src/helpers/responsive_functions.dart';
 import 'package:sobarbabe/src/routes/routes_names.dart';
@@ -44,15 +43,15 @@ class _WelcomeState extends State<Welcome> {
 
               const SizedBox(height: 10),
 
-              Text('Welcome',
+              const Text('Welcome',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18, color: Colors.white)),
+                  style: TextStyle(fontSize: 18, color: Colors.white)),
 
               const SizedBox(height: 10),
 
-              Text('Match with people around you',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18, color: Colors.white)),
+              // Text('Match with people around you',
+              //     textAlign: TextAlign.center,
+              //     style: const TextStyle(fontSize: 18, color: Colors.white)),
 
               const SizedBox(height: 50),
 

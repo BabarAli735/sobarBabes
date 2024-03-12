@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(Duration(seconds: 5), () {});
 
     var token = await AccessTokenManager.getNumber();
-
+    print('token====' + token.toString());
     if (token != null && token.isNotEmpty) {
       // User is logged in, navigate to home screen
       // ignore: use_build_context_synchronously
@@ -44,10 +44,10 @@ class _SplashScreenState extends State<SplashScreen> {
         (Route<dynamic> route) => false, // Remove all previous routes
       );
     } else {
-      // User is not logged in, navigate to login screen
-     
-        // ignore: use_build_context_synchronously
-        Navigator.pushAndRemoveUntil(
+      // User is not logged in, navigate toR login screen
+
+      // ignore: use_build_context_synchronously
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
             builder: (context) => const Welcome()), // Navigate to Login screen
@@ -92,16 +92,16 @@ class _SplashScreenState extends State<SplashScreen> {
                     height: 300.0,
                   ),
                   const SizedBox(height: 10),
-                  const Text('Sobar Babes Club',
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
+                  // const Text('Sobar Babes Club',
+                  //     style: TextStyle(
+                  //         fontSize: 25,
+                  //         fontWeight: FontWeight.bold,
+                  //         color: Colors.white)),
                   const SizedBox(height: 5),
-                  Text('Match with people around you',
-                      textAlign: TextAlign.center,
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  // Text('Match with people around you',
+                  //     textAlign: TextAlign.center,
+                  //     style:
+                  //         const TextStyle(fontSize: 18, color: Colors.white)),
                   const SizedBox(height: 20),
                   if (isActivated)
                     CircularProgressIndicator(

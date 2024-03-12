@@ -11,7 +11,7 @@ import 'package:sobarbabe/src/provider/home_provider.dart';
 import 'dart:ui' as ui;
 
 import 'package:sobarbabe/src/routes/routes_names.dart';
-
+import 'package:sobarbabe/src/widgets/index.dart';
 
 class HomeScreen extends StatefulWidget {
   static const LatLng _center = const LatLng(45.521563, -122.677433);
@@ -28,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Define your markers
-  final List<Marker> _markers = <Marker>[];
-
+  final List _matchData =[];
+var allData =[];
   @override
   void initState() {
     // TODO: implement initState
@@ -42,68 +42,97 @@ class _HomeScreenState extends State<HomeScreen> {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('NearBy').get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    List<Marker> markers = [];
-    allData.forEach((doc) async {
-      final Map<String, dynamic>? data = doc as Map<String, dynamic>?;
+  print('allData=='+allData.toString());
+    // allData.forEach((doc) async {
+    //   final Map<String, dynamic>? data = doc as Map<String, dynamic>?;
 
-      // Explicitly specify the type of doc
+    //   // Explicitly specify the type of doc
 
-      if (data != null) {
-        Uint8List? image = await loadNetworkImage(data['image']);
-        final ui.Codec markerImageCodec = await ui.instantiateImageCodec(
-          image.buffer.asUint8List(),
-          targetWidth: 200,
-          targetHeight: 200,
-        );
-        final ui.FrameInfo frameInfo = await markerImageCodec.getNextFrame();
-        final ByteData? byteData =
-            await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
-        final Uint8List? rezizesImageMarker =
-            await byteData?.buffer.asUint8List();
-
-        Marker marker = Marker(
-          markerId: MarkerId(data['Name']),
-          position: LatLng(data['lat'], data['lng']),
-          infoWindow: InfoWindow(title: data['Name']),
-          icon: BitmapDescriptor.fromBytes(rezizesImageMarker!),
-          onTap: () => {
-            Navigator.pushNamed(context, RoutesName.UserDetail,arguments: data['userId'])
-          },
-        );
-
-        _markers.add(marker);
-        setState(() {});
-      }
-    });
-  }
-
-  Future<Uint8List> loadNetworkImage(String path) async {
-    final completer = Completer<ImageInfo>();
-    var image = NetworkImage(path);
-    image.resolve(ImageConfiguration()).addListener(
-        ImageStreamListener((info, _) => completer.complete(info)));
-    final imageInfo = await completer.future;
-    final byteData =
-        await imageInfo.image.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
+    //   if (data != null) {
+    //     _matchData.add(data);
+    //     setState(() {});
+    //   }
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Match people around you',),
-        backgroundColor: AppColors.black,
-        titleTextStyle: TextStyle(color: AppColors.white,fontSize: responsivefonts(2.4, context)),
-      ),
-      body: GoogleMap(
-        onMapCreated: _onMapCreated,
-        markers: Set<Marker>.of(_markers),
-        initialCameraPosition: const CameraPosition(
-          target: HomeScreen._center,
-          zoom: 11.0,
+        title: Text(
+          'Match people around you',
         ),
+        backgroundColor: AppColors.black,
+        titleTextStyle: TextStyle(
+            color: AppColors.white, fontSize: responsivefonts(2.4, context)),
       ),
+      // body: GoogleMap(
+      //   onMapCreated: _onMapCreated,
+      //   markers: Set<Marker>.of(_markers),
+      //   initialCameraPosition: const CameraPosition(
+      //     target: HomeScreen._center,
+      //     zoom: 11.0,
+      //   ),
+      // ),
+      body: Stack(children: [
+        Image.asset(
+          'assets/images/home_image.png',
+          fit: BoxFit.cover,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+        ),
+        Container(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Center(child: BoldText(text: "It's Match")),
+            Center(
+                child: MediumText(text: "You and Sarah have liked each other")),
+            Container(
+              margin: EdgeInsets.only(top: heightPercentageToDP(3, context)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: widthPercentageToDP(15, context)),
+              child: Stack(
+                alignment: Alignment.center, // Wrap your Row with a Stack
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu0gYR-As9-_w2_fjRc895mD_91WQ5p7N_9Q&s'),
+                        radius: widthPercentageToDP(15, context),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu0gYR-As9-_w2_fjRc895mD_91WQ5p7N_9Q&s'),
+                        radius: widthPercentageToDP(15, context),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    child: Container(
+                        height: widthPercentageToDP(20, context),
+                        width: widthPercentageToDP(20, context),
+                        decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(50)),
+                        child: Icon(
+                          Icons.favorite,
+                          size: responsivefonts(5, context),
+                          color: AppColors.white,
+                        )),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+                margin: EdgeInsets.only(top: 20),
+                child: MediumText(text: "You and Sarah have liked each other"))
+          ]),
+        )
+      ]),
     );
   }
 }

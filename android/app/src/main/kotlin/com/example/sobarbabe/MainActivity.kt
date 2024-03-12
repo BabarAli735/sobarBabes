@@ -1,4 +1,4 @@
-package com.example.sobarbabe
+package com.sobarbabe.club
 
 import io.flutter.embedding.android.FlutterActivity
 
