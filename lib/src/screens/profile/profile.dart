@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late UserModel? userProfileData;
+  late Map<dynamic, String> userProfileData = {};
   late AuthenticationProvider authenticationProvider;
   // Variables
   final _formKey = GlobalKey<FormState>();
@@ -41,14 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     authenticationProvider =
         Provider.of<AuthenticationProvider>(context, listen: false);
-    userProfileData = UserModel(
-        userBio: '',
-        userId: '',
-        userPhoneNumber: '',
-        userPhotoLink: '',
-        userJobTitle: '',
-        userStatus: '',
-        username: '');
+
     _loadUserProfileData(authenticationProvider);
     // Use yourProvider here
     // For example: yourProvider.someMethod();
@@ -59,12 +52,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       var token = await AccessTokenManager.getNumber();
       print('token====' + token.toString());
-      UserModel userModel = await authenticationProvider.getUserDetail(token!);
-      print('userModel===' + userModel.username);
+      Map<dynamic, String> userModel =
+          await authenticationProvider.getUserDetail(token!);
+      print('userModel===' + userModel['username'].toString());
       // Map<String, dynamic> userData = await fetchUserProfileData();
 
       setState(() {
-        userProfileData = userModel;
+        userProfileData = userModel ;
       });
     } catch (error) {
       print('error===' + error.toString());
@@ -75,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('userProfileData' + userProfileData!.username);
+    print('userProfileData' + userProfileData!['username'].toString());
 
     /// Initialization
     var authProvider = Provider.of<AuthenticationProvider>(context);
@@ -126,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: <Widget>[
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    userProfileData!.userPhotoLink),
+                                    userProfileData['userPhotoLink']!),
                                 radius: widthPercentageToDP(18, context),
                                 backgroundColor: Theme.of(context).primaryColor,
                               ),
@@ -170,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _username,
                         decoration: InputDecoration(
                             labelText: "User Name",
-                            hintText: userProfileData!.username,
+                            hintText: userProfileData['username'],
                             hintStyle: TextStyle(color: AppColors.white),
                             labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -202,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _schoolController,
                         decoration: InputDecoration(
                             labelText: "Status",
-                            hintText: userProfileData!.userStatus,
+                            hintText: userProfileData['userStatus'],
                             hintStyle: TextStyle(color: AppColors.white),
                             labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -235,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _jobController,
                         decoration: InputDecoration(
                             labelText: "job_title",
-                            hintText: userProfileData!.userJobTitle,
+                            hintText: userProfileData['userJobTitle'],
                             hintStyle: TextStyle(color: AppColors.white),
                             labelStyle: TextStyle(color: AppColors.white),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -269,8 +263,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         maxLines: 4,
                         decoration: InputDecoration(
                           labelText: "bio",
-                          hintText: userProfileData!.userBio,
-                          hintStyle: TextStyle(color: AppColors.white),
+                          hintText: userProfileData['userBio'],
+                          hintStyle: TextStyle(color: const Color.fromARGB(255, 8, 4, 4)),
                           labelStyle: TextStyle(color: AppColors.white),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           enabled: false,

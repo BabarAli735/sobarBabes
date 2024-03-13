@@ -8,6 +8,7 @@ import 'package:sobarbabe/src/screens/auth/otp_verification.dart';
 import 'package:sobarbabe/src/screens/auth/signUp.dart';
 import 'package:sobarbabe/src/screens/auth/splash_screen.dart';
 import 'package:sobarbabe/src/screens/auth/welcome.dart';
+import 'package:sobarbabe/src/screens/chat/chat_screen.dart';
 import 'package:sobarbabe/src/screens/home/BottomTab.dart';
 import 'package:sobarbabe/src/screens/home/home.dart';
 import 'package:sobarbabe/src/screens/profile/edit_profile.dart';
@@ -56,6 +57,14 @@ class Routes {
       case RoutesName.UserDetail:
         return MaterialPageRoute(
             builder: (BuildContext context) =>  UserDetail(),
+            settings: settings);
+      case RoutesName.UserDetail:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  UserDetail(),
+            settings: settings);
+      case RoutesName.ChatScreen:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>  ChatScreen(),
             settings: settings);
   
       default:

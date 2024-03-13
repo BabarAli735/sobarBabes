@@ -23,7 +23,7 @@ class CustomElevatedButton extends StatelessWidget {
       this.height = 7,
       this.width = 0,
       this.isLoading = false,
-      this.buttonStyle});
+      this. buttonStyle});
 
   @override
   Widget build(BuildContext context) {

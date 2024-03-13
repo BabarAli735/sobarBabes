@@ -17,74 +17,32 @@ class BottomTab extends StatefulWidget {
   _BottomTabState createState() => _BottomTabState();
 }
 
-class _BottomTabState extends State<BottomTab> with SingleTickerProviderStateMixin {
-  late UserModel userProfileData;
+class _BottomTabState extends State<BottomTab>
+    with SingleTickerProviderStateMixin {
+  // Initialize userProfileData with a default value
   late AuthenticationProvider authenticationProvider;
   int _currentIndex = 0;
- @override
+
+  @override
   void initState() {
     super.initState();
 
-    super.initState();
-   // Start the confetti loop
-    Future.delayed(Duration.zero, () {
-      authenticationProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
-      _loadUserProfileData(authenticationProvider);
-      // Use yourProvider here
-      // For example: yourProvider.someMethod();
-    });
+   
   }
-   Future<void> _loadUserProfileData(authenticationProvider) async {
-    try {
-      var token = await AccessTokenManager.getNumber();
-      // print('token====' + token.toString());
-      UserModel userModel = await authenticationProvider.getUserDetail(token!);
-      print('userModel===' + userModel.username);
-      // Map<String, dynamic> userData = await fetchUserProfileData();
 
-      setState(() {
-        userProfileData = userModel;
-      });
-    } catch (error) {
-      // Handle any errors that may occur during data loading
-      // print("Error loading user profile data: $error");
-    }
-  }
+
+
+
   @override
   Widget build(BuildContext context) {
-   final List<Widget> _screens = [
-    HomeScreen(),
-    FavoriteScreen(),
-    SearchScreen(),
-    ProfileScreen(),
-  ];
+   
+    final List<Widget> _screens = [
+      HomeScreen(),
+      FavoriteScreen(),
+      SearchScreen(),
+      ProfileScreen(),
+    ];
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0.0,
-      //   backgroundColor: AppColors.black,
-      //   toolbarHeight: 55.0,
-      //   titleSpacing: 36.0,
-      //   centerTitle: false,
-      //   leading: Builder(
-      //     builder: (BuildContext context) {
-      //       return GestureDetector(
-      //         onTap: () {
-      //           Scaffold.of(context).openDrawer();
-      //         },
-      //       );
-      //     },
-      //   ),
-      //   title: Text(
-      //     'Welcome ${userProfileData.username} ',
-      //     style: TextStyle(
-      //       fontSize: 20.0,
-      //       color: Colors.white,
-      //       fontFamily: 'Mulish',
-      //       fontWeight: FontWeight.bold,
-      //     ),
-      //   ),
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: AppColors.white,
         showUnselectedLabels: true,

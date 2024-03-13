@@ -72,4 +72,5 @@ class HomeProvider with ChangeNotifier {
       Utils.toastMessage('Something went wrong try again');
     });
   }
+  
 }

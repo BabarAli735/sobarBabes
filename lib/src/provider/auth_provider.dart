@@ -105,7 +105,7 @@ class AuthenticationProvider with ChangeNotifier {
       print('phoneNumber====' + phoneNumber.toString());
       if (newUser != null) {
         try {
-          UserModel userModel = await getUserDetail(phoneNumber);
+          Map<dynamic,String> userModel = await getUserDetail(phoneNumber);
 
           await AccessTokenManager.saveAccessToken(newUser.toString());
           await AccessTokenManager.savePhoneNumber(phoneNumber);
@@ -180,14 +180,45 @@ class AuthenticationProvider with ChangeNotifier {
     return age;
   }
 
-  Future<UserModel> getUserDetail(String phoneNumber) async {
+  Future<Map<dynamic, String>> getUserDetail(String phoneNumber) async {
     final snapshot = await _db
         .collection('Users')
         .where('userPhoneNumber', isEqualTo: phoneNumber)
         .get();
-    final userData = snapshot.docs.map((e) => UserModel.fromSnapShot(e)).single;
-    return userData;
+    final userModel= snapshot.docs.map((e) => UserModel.fromSnapShot(e)).single;
+    
+  final Map<dynamic, String> userData = {
+    'userId': userModel.userId,
+    'userPhoneNumber': userModel.userPhoneNumber,
+    'userPhotoLink': userModel.userPhotoLink,
+    // Add other fields as needed
+  };
+
+  return userData;
+   
   }
+Future<Map<String, dynamic>> getMatchDetail(String id) async {
+  final snapshot = await _db
+      .collection('NearBy')
+      .where('userId', isEqualTo: id)
+      .get();
+
+  if (snapshot.docs.isEmpty) {
+    // Handle the case when no document is found with the given ID
+    return {};
+  }
+
+ final Map<String, dynamic> userData = snapshot.docs.first.data();
+  return {
+    'userId': userData['userId'],
+    'image': userData['image'],
+    'Name': userData['Name'],
+    // Add other fields as needed
+  };
+}
+
+
+
 
   Future<String> uploadingImage(File image) async {
     String uniqueId = DateTime.now().millisecondsSinceEpoch.toString() + '.jpg';
